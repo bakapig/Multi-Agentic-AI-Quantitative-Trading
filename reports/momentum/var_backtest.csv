@@ -1,0 +1,5 @@
+model,level,viol_rate,kupiec_p,christoffersen_p
+GARCH-t,0.99,0.0162,0.0001,0.0518
+GARCH-t,0.95,0.051,0.7593,0.0029
+FHS (GJR),0.99,0.0108,0.5968,0.1346
+FHS (GJR),0.95,0.0493,0.8288,0.0026

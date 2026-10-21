@@ -62,6 +62,15 @@ bind before the fund cap. The Phantom Book measures exposure reductions, not
 counterfactual profits. Supplied cash and confirmed holdings determine NAV;
 recorded intentions do not change the account or generate returns.
 
+## Momentum strategy (standalone)
+
+`momentum/` is a separate paper strategy: a 50% long/short trend sleeve plus a 50% long-only risk-parity core over 21 assets,
+volatility-targeted with walk-forward GARCH(1,1)-t forecasts. It has its own inputs (`data/momentum/`), daily update
+(`scripts/run_momentum_daily.py`), outputs (`live/momentum/`, `reports/momentum/`) and tests. It is not connected to `fund_agents`: the
+fund risk layer models two-leg pair groups with an 80% gross cap, while this strategy runs up to 3x gross long and short. Connecting
+it as the Momentum PM would need a single-asset target type and a leverage policy in `fund_agents/models.py` and `risk.py`. See
+[momentum/README.md](momentum/README.md).
+
 ## Persistence and investor access
 
 New accounts and stores are separate from old two-PM state. Reports use
