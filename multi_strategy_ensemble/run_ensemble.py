@@ -56,12 +56,11 @@ def run_experiment(cfg: EnsembleConfig = None):
     bench_series = spy_df["Close"] if "Close" in spy_df.columns else spy_df.iloc[:, 0]
 
     # Select tickers in universe that are present in prices (Equities Only)
-    crypto_tickers = ["BTC-USD", "ETH-USD", "SOL-USD"]
     etf_tickers = ["SPY", "EWS", "GLD", "GDX", "USO", "XLE", "XOP", "XLF", "KRE", "XLK", "QQQ"]
     if cfg.STRATEGY_UNIVERSE == "ALL" or "ALL" in cfg.STRATEGY_UNIVERSE or not cfg.STRATEGY_UNIVERSE:
-        valid_tickers = [c for c in all_prices.columns if c not in ["Date", "date", "Unnamed: 0"] and c not in crypto_tickers and c not in etf_tickers and "USD" not in c]
+        valid_tickers = [c for c in all_prices.columns if c not in ["Date", "date", "Unnamed: 0"] and c not in etf_tickers and "USD" not in c]
     else:
-        valid_tickers = [t for t in cfg.STRATEGY_UNIVERSE if t in all_prices.columns and t not in crypto_tickers and t not in etf_tickers and "USD" not in t]
+        valid_tickers = [t for t in cfg.STRATEGY_UNIVERSE if t in all_prices.columns and t not in etf_tickers and "USD" not in t]
     print(f"  [+] Active Pure Equities Universe ({len(valid_tickers)} equities across S&P 500, STI, and STOXX 600)")
     universe_prices = all_prices[valid_tickers].dropna(how="all").ffill().bfill()
 

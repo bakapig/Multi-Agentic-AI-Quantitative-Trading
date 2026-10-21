@@ -1,8 +1,0 @@
-{
-  "freqai": {
-    "identifier": "sequence-lstm-static-2025-v1-seed42",
-    "train_period_days": 365,
-    "backtest_period_days": 260,
-    "save_backtest_models": false
-  }
-}

@@ -18,6 +18,7 @@ The current product is a localhost report reader. Navigation, search, tours,
 filters, and exports work without external services. Hosting and investor
 authentication require a separate deployment.
 
-The active mandate has one connected Pairs PM, one pending Momentum reserve,
-and central cash. Only pairs-fund-v2 reports appear in the active portal.
-Source provenance and holding policy belong beside the Pairs diagnostics.
+The active mandate has one Ensemble PM with trend, momentum and mean-reversion
+engines, plus central cash. Only ensemble-fund-v3 reports appear in the active
+portal. Show actual allocation weights, including zero-weight standby engines.
+Source hashes and the effective allocation policy belong beside the diagnostics.

@@ -1,10 +1,9 @@
 {
   "mode": "research",
-  "account_key": "pairs-fund-research",
-  "state_path": "runtime/pairs_fund.research.sqlite",
-  "report_directory": "runs/fund_agents/pairs_only/research",
+  "account_key": "ensemble-fund-research",
+  "state_path": "runtime/ensemble_fund.research.sqlite",
+  "report_directory": "runs/fund_agents/ensemble/research",
+  "ensemble_budget_usd": 3000000,
   "central_cash_usd": 2000000,
-  "formation_end": "2024-12-31",
-  "require_formation_qualification": true,
-  "pairs": [{"asset1": "V", "asset2": "MA", "calendar": "XNYS", "currency": "USD"}]
+  "allocation_method": "regime"
 }

@@ -50,11 +50,14 @@ class MeanReversionStrategy:
         """
         dates = prices_df.index
         n_dates = len(dates)
+        target_history = pd.DataFrame(0.0, index=dates, columns=prices_df.columns)
 
         valid_pairs = [(a, b) for a, b in self.pairs if a in prices_df.columns and b in prices_df.columns]
         if not valid_pairs:
             # Fallback if specific pairs not found
-            return pd.DataFrame({"daily_return": 0.0, "daily_friction": 0.0, "cumulative_return": 0.0}, index=dates)
+            result = pd.DataFrame({"daily_return": 0.0, "daily_friction": 0.0, "cumulative_return": 0.0}, index=dates)
+            result.attrs["target_weights"] = target_history
+            return result
 
         n_pairs = len(valid_pairs)
         pair_returns = pd.DataFrame(0.0, index=dates, columns=[f"{a}-{b}" for a, b in valid_pairs])
@@ -85,6 +88,8 @@ class MeanReversionStrategy:
 
                 z_val = z_scores.iloc[t]
                 if np.isnan(z_val):
+                    target_history.loc[dates[t], a] += pos * 0.5 / n_pairs
+                    target_history.loc[dates[t], b] -= pos * 0.5 / n_pairs
                     continue
 
                 # State machine
@@ -100,6 +105,10 @@ class MeanReversionStrategy:
                     if z_val <= self.exit_z or z_val >= self.stop_loss_z:
                         pos = 0   # Reverted or Stop Loss
 
+                # Aggregate overlapping symbols before proposing a portfolio.
+                target_history.loc[dates[t], a] += pos * 0.5 / n_pairs
+                target_history.loc[dates[t], b] -= pos * 0.5 / n_pairs
+
             pair_returns[pair_name] = pnl_series
 
         # Equal allocation across active pairs + cash collateral interest
@@ -111,5 +120,7 @@ class MeanReversionStrategy:
             "daily_friction": 0.0001,
             "cumulative_return": np.cumprod(1.0 + total_reversion_ret) - 1.0
         }, index=dates)
+
+        res_df.attrs["target_weights"] = target_history
 
         return res_df

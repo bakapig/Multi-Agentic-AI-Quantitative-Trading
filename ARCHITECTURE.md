@@ -1,254 +1,219 @@
-# Pairs fund architecture
+# Ensemble fund architecture
 
-Updated 17 October 2026. Pairs is the only connected PM. The teammate's pinned
-Kalman, OU, forecasting, and formation engines run through `fund_agents/pairs.py`.
-The active package does not import the legacy Crypto engine or its risk state.
+Updated 20 October 2026. One Ensemble PM replaces the retired standalone
+Kalman/OU Pairs PM. It runs the teammate's trend, momentum and mean-reversion
+engines from `multi_strategy_ensemble/` through independent fund risk.
+
+[Slide diagram](presentations/architecture_20261020/ensemble_architecture.html) ·
+[SVG](presentations/architecture_20261020/ensemble_architecture.svg) ·
+[PNG](presentations/architecture_20261020/ensemble_architecture.png) ·
+[PDF](output/pdf/Ensemble_Fund_Architecture_20261020.pdf)
 
 ## Human AI and code ownership
 
-The human team owns strategy definitions and risk policy. Deterministic code
-computes targets, enforces risk, and saves intentions. The advisory lane reviews
-evidence after the quantitative decision and has no order authority.
+The human team chooses the universe, capital budgets, allocation method and risk
+limits. Lane 1 computes targets and records risk-approved intentions. Lane 2
+reviews the saved evidence after risk, with no authority to change the portfolio.
+The default mandate combines the previous strategy budgets into USD 3 million
+for the ensemble and retains USD 2 million in central cash.
 
 ```mermaid
 flowchart TB
-    BOARD["Human team<br/>$5M paper mandate and frozen policy"]
-    subgraph QUANT["Lane 1 · Quantitative decisions"]
-        DATA["Equity closes<br/>Declared sessions · no gap filling"]
-        PAIRS["Pairs PM · $1.5M<br/>Kalman hedge · OU forecasts<br/>Frozen formation gate · entry half-life time stop"]
-        RISK["Independent fund risk<br/>80% gross · 20% symbol<br/>12% soft threshold · 25% persistent breaker"]
-        STORE["Exact approval and snapshot<br/>Linked two-leg intentions · zero fills"]
-        DATA --> PAIRS -->|Both signed target legs| RISK --> STORE
+    BOARD["HUMAN OWNERSHIP<br/>Universe, mandate and risk policy"]
+    COORD["NON-AI: FundCoordinator<br/>Fixed sequence in one Python process"]
+    subgraph QUANT["Lane 1 - NON-AI quantitative code"]
+        DATA["NON-AI: Data validation<br/>USD equity closes + SPY; completed sessions"]
+        TREND["NON-AI: Trend following<br/>Moving-average rules"]
+        REV["NON-AI: Mean reversion<br/>Rolling spread Z-scores"]
+        MOM["NON-AI: Momentum strategy<br/>IGNORED / EXCLUDED<br/>(Losing money in Oct tests: -2.35%)"]
+        ALLOC["NON-AI: Ensemble PM + regime rules<br/>Strategy weights and symbol aggregation"]
+        RISK["NON-AI: Fund risk + Phantom Book<br/>Limits, drawdown and exposure arithmetic"]
+        RECORD["NON-AI: Intention recorder<br/>Exact approval and snapshot; zero fills"]
+        DATA --> TREND & REV
+        DATA -.->|Bypassed / zero weight| MOM
+        TREND & REV --> ALLOC
+        ALLOC --> RISK --> RECORD
     end
-    subgraph REVIEW["Lane 2 · Evidence review after risk"]
-        PM["Pairs PM representative<br/>Signals · model health · positions"]
-        PHANTOM["Phantom Book<br/>Proposed vs approved gross"]
-        CHAIR["Committee Chair<br/>Exposure · Phantom Book · PM memo"]
-        PM --> CHAIR
-        PHANTOM --> CHAIR
+    subgraph REVIEW["Lane 2 - AI-ready advisory interfaces"]
+        ANALYST["AI-READY: Ensemble analyst<br/>Current tools and summaries run in code"]
+        CHAIR["AI-READY: Committee Chair<br/>Current tools and summaries run in code"]
+        CHECKS["NON-AI: Shared reply checks<br/>Envelope, facts digest and metric values"]
+        ANALYST --> CHAIR
+        ANALYST --> CHECKS
+        CHAIR --> CHECKS
     end
-    BOARD -->|Policy| PAIRS
+    LLM["AI: Optional external LLM<br/>Manually generated replies can be imported<br/>Automatic calls NOT CONNECTED"]
+    BOARD --> COORD
+    BOARD -->|Policy| ALLOC
     BOARD -->|Limits| RISK
-    PAIRS -.->|Read-only diagnostics| PM
-    RISK -.-> PM
-    RISK -.-> PHANTOM
-    STORE --> AUDIT["Atomic SQLite cycle and JSON export"]
-    CHAIR --> AUDIT
-    AUDIT --> PORTAL["Read-only investor portal<br/>Overview · PM · risk · committee · flow · ledger"]
-    RESERVE["Momentum reserve · $1.5M cash<br/>Central cash · $2M"] -.->|Included in NAV| RISK
+    COORD --> DATA
+    LLM -.->|Optional imported reply| ANALYST
+    LLM -.->|Optional imported reply| CHAIR
+    ALLOC -.->|Read-only diagnostics| ANALYST
+    RISK -.->|Decision and exposure facts| ANALYST
+    RISK -.->|Phantom Book and metrics| CHAIR
+    RECORD --> AUDIT["NON-AI: SQLite + JSON storage"]
+    CHECKS --> AUDIT
+    AUDIT --> PORTAL["NON-AI: Read-only investor web app"]
+    classDef human fill:#fff1d5,stroke:#c08b28,color:#644400;
+    classDef code fill:#edf6f3,stroke:#087f6d,color:#145c51;
+    classDef ready fill:#f1eefc,stroke:#8574d8,color:#4b3d87;
+    classDef ai fill:#635bff,stroke:#4b44d0,color:#ffffff;
+    classDef infra fill:#e3e9f2,stroke:#697a91,color:#14243b;
+    class BOARD human;
+    class COORD,DATA,TREND,MOM,REV,ALLOC,RISK,RECORD code;
+    class ANALYST,CHAIR ready;
+    class LLM ai;
+    class CHECKS,AUDIT,PORTAL infra;
 ```
 
-## Strategy integration
+### Which parts use AI
 
-The upstream revision remains `5d42b04` as checked on 17 October. Four numerical
-files are pinned in `vendor/pairs_trading/SOURCE.json` and checked against their
-recorded local hashes for each proposal. Saved diagnostics include source,
-revision, effective policy, and configured pairs. The default research pair is
-V/MA on XNYS in USD; further pairs require declared calendars, currencies, and
-validated data. The upstream ensemble and crypto candidates are not connected.
+| Component | Current implementation | AI status |
+| --- | --- | --- |
+| Human policy owners | Select mandate, universe and risk policy | Human judgment |
+| FundCoordinator | Calls the modules in a fixed sequence | Non-AI code |
+| Data gate | Validates required sessions and numerical values | Non-AI code |
+| Three strategy engines | Moving averages, rankings and spread Z-scores | Non-AI quantitative rules |
+| Regime detector and Ensemble PM | Threshold classifier, allocation and aggregation | Non-AI code |
+| FundRisk and Phantom Book | Limits, scaling, breaker state and exposure differences | Non-AI code |
+| Analyst and Committee Chair | Read-only diagnostic tools and computed summaries | AI-ready interfaces; no automatic model calls |
+| Optional external LLM | Can generate commentary outside this runner for manual import | AI-generated input, when supplied |
+| ResearchAgent reply checks | Schema, digest and structured metric comparisons | Non-AI validation code |
+| Intention recorder, database, JSON and web app | Persistence and read-only display | Non-AI infrastructure |
 
-Formation through 31 December 2024 gates research entries with upstream
-cointegration, correlation and half-life thresholds. The adapter blocks
-unqualified fallback entries, extreme divergence, and invalid OU estimates.
-It corrects residual forecast standardization and preserves signed beta.
-Confirmed opening sessions determine a frozen OU half-life time limit:
-`min(45, max(1, ceil(2.5 × entry_half_life)))`; invalid entry estimates use the hard cap.
-Future price rows cannot change a prior signal. Missing required sessions hold
-the cycle. Closed-market holdings retain confirmed units without a new trade.
+The current default pipeline performs no automatic LLM inference. An agent role
+name does not mean a model ran. The analyst and Chair can accept imported model
+commentary, while all default tools and summaries execute ordinary Python code.
+Their outputs cannot modify targets, override risk or place orders. Current
+role separation is implemented through interfaces inside a trusted process.
 
-Fund risk counts symbol gross across pair groups before netting. A common scale
-preserves both signed dollar legs. Capital, collateral, and fee reserves can
-bind before the fund cap. The Phantom Book measures exposure reductions, not
-counterfactual profits. Supplied cash and confirmed holdings determine NAV;
-recorded intentions do not change the account or generate returns.
 
-## Persistence and investor access
+## Bruce Tech design reference and proposed extension
 
-New accounts and stores are separate from old two-PM state. Reports use
-`pairs-fund-v2`; the active portal indexes only that schema with exactly the
-Pairs PM. Old JSON and SQLite records remain historical on disk. An old cycle
-link falls back to an indexed current cycle. Legacy portfolio/config fields are
-rejected instead of silently reassigning existing holdings.
+The [Bruce Tech public site](https://bruce-tech.com/) describes Manifest MX5 as
+one engine requiring agreement between tension, momentum and structure readings.
+It also lists Safe Harbor with a 7% maximum-drawdown halt and Ride the Waves with
+a 15% halt. These are attributed reference descriptions, not features verified
+in or imported into this repository.
 
-`python -m fund_agents` runs the synthetic demo. `python -m fund_agents.dashboard`
-serves the localhost GET-only portal. The [run guide](fund_agents/README.md)
-documents historical input, account schema, optional imported replies, and exports.
-Default tools and summaries do not call an LLM. Imported replies must bind to
-facts digests and match structured metric claims; narrative needs human review.
+[Proposed-extension diagram](presentations/architecture_20261020/bruce_inspired_proposal.html) ·
+[PNG](presentations/architecture_20261020/bruce_inspired_proposal.png) ·
+[Editable SVG](presentations/architecture_20261020/bruce_inspired_proposal.svg) ·
+[PDF](output/pdf/Bruce_Inspired_Architecture_Proposal_20261020.pdf)
 
-The next engineering milestones are linked-leg fill handling, quote/lot and
-borrow checks, costed and reconciled accounting, provider integration, hosted
-investor access, and a separately validated Momentum engine. Forward performance
-evidence remains necessary before making an investment case.
+| Idea | Relevance to Meridian | Implementation status |
+| --- | --- | --- |
+| Regime adaptation | The existing classifier changes allocation weights by market state | Implemented as deterministic rules |
+| Three readings must agree | A possible admission gate for one signal engine; different from blending three strategy portfolios | Proposed; no tension/structure metrics or agreement gate implemented |
+| One engine, two envelopes | Separate investment logic from the investor's risk mandate | Useful design pattern; named profiles are not configured |
+| Safe Harbor 7% halt | Example tighter drawdown policy attributed to Bruce Tech | Reference only; not the current fund threshold |
+| Ride the Waves 15% halt | Example wider drawdown policy attributed to Bruce Tech | Reference only; not the current fund threshold |
 
-## Archived standalone research
+The envelopes are **risk profiles**, not instruments. Instruments are assets such
+as the configured US equities and SPY benchmark. The reference website describes
+a gold trading context; it does not establish how these policies perform for
+Meridian's equity universe.
 
-The following sections describe earlier crypto research retained for history.
-They are not part of the active architecture above.
+A Meridian confluence proposal would need numerical definitions, lookbacks,
+thresholds, direction and an agreement rule for each reading. The proposed diagram
+uses no new entry on disagreement; existing-position exits require an explicit,
+separate policy. Its labels are conceptual measures, not a reconstruction of
+Bruce Tech's proprietary implementation. Such a deterministic gate and its risk
+profiles would be non-AI. The advisory interfaces would remain read-only.
 
-## Existing crypto infrastructure from 9 October 2026
+The active FundConfig still defaults to a 12% soft drawdown and a 25% hard breaker.
+Its conservative/standard/aggressive tiers are exposure multipliers, not 7%/15%
+halt profiles. Configuration requires soft_drawdown < maximum_drawdown. A 7% hard
+profile therefore needs a soft threshold below 7%; copying that hard number into
+the current config alone is invalid.
 
-Implemented 9 October 2026. The structure follows the supplied BURSA architecture:
-one local Python process with explicit ownership, typed messages, a final Risk
-veto, persisted state, and record-only Execution. Existing research models and
-the separate daily paper-account workflow remain available.
+Before adopting either proposed profile, specify whether drawdown is measured on
+fund or sleeve NAV, the high-water-mark basis, position exit handling, account
+state separation and reset rules. A halt is a policy reaction, not a guaranteed
+loss ceiling. Validate the change as a separate strategy/policy experiment and
+keep existing October evidence attached to its actual policy.
 
-```mermaid
-flowchart TD
-    D[Saved Binance Spot daily OHLCV] --> Q[Data adapter: schema, continuity, freshness, fingerprints]
-    Q --> M[Meta Agent: coordinate and monitor]
-    M --> G[Regime Agent: baseline policy or prior-only HMM]
-    G --> S[Signal Agent: Trend / Mean Revert / Defensive experts]
-    S --> W[Meta: probability-weighted arbitration]
-    W --> P[Position Agent: capped inverse-volatility target units]
-    P --> R[Risk Agent: PASS / REDUCE / REJECT]
-    M --> R
-    R -->|approved persisted intents| E[Execution Agent: record only, zero fills]
-    R -->|quality veto / stop / breaker| A[Notify all modules]
-    E --> L[SQLite decision trail and JSON report]
-    A --> L
-    L --> H[Optional LLM Research Agent: explain verified facts]
-    H --> B[Logged research brief requiring human review]
-```
+## Connected numerical engines
 
-Meta calls each module in order. Signal specialists do not submit orders. Position
-only proposes. Risk approves, resizes or rejects; Meta cannot override its decision.
-Execution verifies that the exact Risk decision is persisted before recording an
-intent. A raw order or modified approval is rejected.
+`fund_agents/ensemble.py` calls the existing numerical strategy classes and reads
+their newly exposed closing-session target weights. It uses the selected
+allocation method, aggregates shared symbols and produces one portfolio basket.
+These are next-session proposals; research engine returns and simulated positions
+do not become confirmed fund holdings or fund performance.
 
-## Existing capabilities fitted into agents
+The current shared `RegimeDetector` assigns mean reversion **0% in every state**.
+For trend/momentum/mean-reversion/cash, its policy is:
 
-| Module | Reused capability | Phase-1 behavior |
-|---|---|---|
-| Data adapter | Binance daily files; existing public client and archive loader | Audit exact local bytes; preserve gaps and labels |
-| Meta | Existing daily orchestration concepts | One atomic SQLite cycle, notifications and report |
-| Regime | `GaussianHMM2`, stationary return/volatility features | Baseline: trend-only policy. Optional experiment fits strictly before inference |
-| Signal | Existing adaptive SMA and Sharpe gate | Trend expert, simple holdings-aware Bollinger expert, defensive cash expert |
-| Position | Existing capped inverse-volatility sizing | Long-only fractional crypto units, next-period target proposal |
-| Risk | Existing exposure/volatility constraints | Independent caps, fee/cash budget, prior-ADV liquidity cap, stops and latched drawdown breaker |
-| Execution | Explicit BURSA-style boundary | Idempotent intent records; no fills or portfolio changes |
-| LLM Research | Wayland Lesson 14 research boundary | Optional imported structured reply; no provider call or order authority |
+| Regime | Trend | Momentum | Mean reversion | Cash |
+| --- | ---: | ---: | ---: | ---: |
+| Trending bull or bear | 50% | 40% | 0% | 10% |
+| Ranging | 10% | 80% | 0% | 10% |
+| Transition | 25% | 60% | 0% | 15% |
+| Crisis | 15% | 15% | 0% | 70% |
 
-`config/agents.research.json` retains the assignment's adaptive strategy. Its
-Regime Agent explicitly declares a policy with 100% trend routing; those weights
-are not HMM probabilities. `config/agents.hmm_experiment.json` enables a separate
-unvalidated routing experiment: high volatility -> trend, low volatility -> mean
-reversion, defensive weight zero. Volatility does not establish a crisis. The
-new architecture and HMM blend have no newly measured performance claims.
+All three engines run for diagnostics. Equal-weight allocation gives each one
+third; inverse-volatility allocation uses the latest 60 observed strategy returns
+to propose weights for the next session. Fund risk can reduce any resulting
+portfolio. The mean-reversion engine uses predefined pairs and rolling log-spread
+Z-scores; it does not reuse the removed Kalman, OU or formation-selection code.
 
-## Data engineering gate
+## Data and account boundary
 
-`crypto_quant/data_quality.py` checks required columns, explicit timezone offsets,
-finite positive prices, OHLC ordering, volume bounds, integer trade counts, unique
-ordered timestamps, UTC interval alignment, completed candle boundaries,
-continuous 24/7 coverage, minimum history and the expected last completed bar.
-Zero-volume decision bars block proposals. Large moves and older zero-volume bars
-are preserved as warnings. No gap filling, duplicate removal or price repair is
-performed by the gate.
+The connected adapter currently supports explicit USD US-equity universes on
+XNYS sessions. The default universe contains 14 US equities; the benchmark is SPY.
+A sector CSV optionally enables the existing sector-neutral momentum mode.
+The standalone research scripts still support broader universes. A multi-market
+fund adapter needs separately declared currencies, FX and exchange calendars.
 
-The local agent adapter audits all available rows through the requested date and
-explicitly counts future rows excluded for historical replay. It reads each file
-once and fingerprints those exact bytes. A failed file supplies no usable bars;
-Risk vetoes the cycle. Audit and snapshot hashes bind reports to inputs. These are
-structural checks, not independent verification of the venue, listing history,
-survivorship, bid/ask liquidity, or revised data. The existing daily public runner
-also verifies listing dates before this gate.
+Prices are truncated at the valuation date, then restricted to declared exchange
+sessions. Missing required sessions, duplicate dates/columns, nonfinite or
+nonpositive prices hold the cycle. Rows for closed XNYS dates in global caches
+are explicitly excluded and counted. No missing price is filled. On closed-market
+valuation dates, confirmed units are retained without new intentions.
 
-`run_daily_pipeline()` now writes `live/data_quality.json` before any portfolio
-processing and refuses stale or corrupt input. On quality failure it leaves
-portfolio ledgers unchanged; the quality file records the failed attempt even if
-an older successful run manifest still exists. The public client rejects duplicate
-or unordered candles rather than silently dropping them.
+Confirmed ensemble cash, signed holdings and central cash determine NAV.
+Common portfolio scaling enforces capital, collateral and fee reserves, fund gross
+and symbol limits. The soft drawdown threshold reduces the gross cap; the hard
+breaker persists across restarts. Recorded intentions never update the account.
 
-Future runs of `scripts/prepare_klines.py` add per-dataset quality sidecars,
-normalized-output SHA-256 hashes, raw-archive fingerprints and per-dataset checksum
-verification flags. Existing processed files/manifests have not been regenerated.
-Known hourly gaps remain visible and can cause a structural FAIL; checksum success
-does not make a gapped window suitable for a continuous daily model.
+## Persistence and advisory review
 
-## State and risk boundaries
+Reports use `ensemble-fund-v3`. New ensemble accounts, databases and report
+folders are separate from earlier accounts. Legacy configuration fields,
+portfolio cash fields, PM identities and state schemas are rejected; no old
+position is silently reassigned. The portal indexes exactly one Ensemble PM and
+excludes older report schemas. Historical exports remain historical on disk.
 
-- Frozen dataclasses carry snapshots, routing, signals, proposals and decisions.
-- SQLite cycle/events/decisions/intents tables reject UPDATE and DELETE through
-  triggers. Mutable account state holds the breaker. This is operational logging
-  inside a trusted process, not external tamper-proof storage.
-- A transaction covers approvals, intent records, breaker state and event history.
-  A crash before commit rolls the cycle back. JSON exports can be recovered from
-  SQLite if exporting fails after commit.
-- Intent identities are derived from inputs, portfolio and policy. Repeating an
-  unchanged proposal in one account produces `ALREADY_RECORDED_NOT_EXECUTED`.
-- Risk uses supplied cash for buys. Planned sale proceeds are never treated as
-  available cash. Prior-day trailing quote-volume ADV caps order notional; that
-  cap is a research estimate, not an order-book fill model.
-- The configured volatility target is estimated by Position from historical
-  covariance; it is not a guaranteed future-volatility ceiling.
-- Stops and take-profit thresholds generate exit requests. No requested exit is
-  a promised fill. The drawdown breaker survives restarts and has no automatic
-  reset. A separate account key/database is required for an independent replay.
-- Unknown active specialist inputs hold the proposed portfolio. Independently
-  triggered Risk exit requests can still be recorded on valid data.
-- The agent CLI never changes `live/paper_state.json`, positions, cash, P&L or
-  the assignment CSV. The existing daily runner remains the paper-fill workflow.
+`python -m fund_agents` runs an invented-price demo. Research input and confirmed
+account examples are in [the run guide](fund_agents/README.md).
+`python -m fund_agents.dashboard` serves the read-only localhost portal.
 
-## LLM role
+The ensemble analyst and Committee Chair use deterministic diagnostic tools.
+Optional imported LLM replies must bind to the exact facts digest and structured
+metric values. Automatic provider calls are pending. Narrative needs human review.
+The Phantom Book measures exposure removed by risk; it does not measure profits.
 
-Following [Wayland Zhang, Lesson 14](https://waylandz.com/quant-book-en/Lesson-14-LLM-Applications-in-Quant/),
-LLM research runs after quantitative decisions. It receives computed facts and a
-digest, and may return a summary, observations, risk flags, suggested experiments
-and copied metric claims. Each claim must match an input metric. Raw reply, parsed
-output, claimed model identity, prompt version, facts, timestamp and result are
-logged. Free-text claims and causality require human review. No LLM API integration
-or model execution is claimed in this phase; imported replies are explicitly
-optional and the model name is supplied by the caller.
+## Research and execution status
 
-To supply a reply, take `llm_research.input_facts`, `input_sha256` and `system_prompt`
-from a run report. Save a response envelope under ignored `local_llm/`:
+The new integration records intentions only: zero orders, fills or fund returns.
+Quote/lot checks, borrow availability, fill handling and reconciled accounting are
+future work. Standalone vectorized and Backtrader outputs remain research
+comparisons; their allocation implementations and timing assumptions differ.
+The teammate's earlier README performance table is not a validated return series
+for this connected fund. No new backtest performance claim is made here.
 
-```json
-{
-  "model": "your-provider-model-id",
-  "input_sha256": "digest-from-the-report",
-  "output": {
-    "summary": "Research summary for human review",
-    "observations": [],
-    "risk_flags": [],
-    "suggested_research": [],
-    "metric_claims": [{"name": "filled_orders", "value": 0}]
-  }
-}
-```
+## Standalone momentum research
 
-Pass `--llm-response local_llm/reply.json` to an otherwise identical cycle. A
-schema, digest or metric mismatch is logged as `REJECTED`; execution decisions
-are unaffected. The default report says `NOT_REQUESTED`, not an invented LLM brief.
+The separate `momentum/` engine blends 50% time-series trend and 50% long-only
+inverse-volatility core with walk-forward GARCH-t forecasts. Its 20 configured
+assets cover US-listed funds and four SGX securities. It remains a standalone
+research engine and is not wired into the intention-only Ensemble PM.
 
-## Run locally
+In forward evaluation across October 1–20, 2026, the standalone momentum strategy
+produced negative returns (-2.35% total return, -3.67% max drawdown, -4.23 Sharpe).
+Consequently, the momentum strategy is explicitly ignored and excluded from active
+architecture allocations.
 
-```powershell
-.\.venv\Scripts\python.exe -m crypto_agents --config config/agents.demo.json
-.\.venv\Scripts\python.exe -m crypto_agents --config config/agents.demo.json --scenario reduce
-.\.venv\Scripts\python.exe -m crypto_agents --config config/agents.demo.json --scenario flagged
-.\.venv\Scripts\python.exe -m crypto_agents --config config/agents.demo.json --scenario breaker
-.\.venv\Scripts\python.exe -m crypto_agents --config config/agents.research.json --data-dir live/market_data --as-of 2026-09-16
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-```
-
-The September date is an explicit historical replay of the current cached daily
-files. It does not claim current October coverage. Research runs use an empty
-hypothetical portfolio unless `--portfolio local_portfolios/snapshot.json` is
-supplied. Required portfolio fields: `as_of`, `cash_usdt`, `peak_equity_usdt`, and
-`holdings` containing `symbol`, `units`, `entry_price`. Dates must match the market.
-
-Audit current freshness without changing local data:
-
-```powershell
-.\.venv\Scripts\python.exe scripts/audit_market_data.py live/market_data/BTCUSDT_1d.csv live/market_data/ETHUSDT_1d.csv --closed-at 2026-10-09T00:00:00Z --expected-last 2026-10-08 --minimum-rows 520
-```
-
-Status codes: 0 for a completed inspection/intent cycle; 2 for quality/risk veto,
-breaker or input hold. Runtime state and per-cycle reports are ignored by Git.
-The verified test/evidence summary is in `reports/agents/implementation_report.md`.
-
-Deferred: direct LLM provider integration, authenticated exchange execution,
-multi-process permissions, continuous monitoring, and a new agent-strategy
-backtest. The assignment's October paper run must be activated separately.
+The October 1–20 comparison lives in `reports/october_2026/`. It compares research
+backtests, without claiming confirmed fund holdings, fills or consolidated returns.

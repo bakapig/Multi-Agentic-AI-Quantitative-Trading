@@ -1,6 +1,6 @@
-"""Signed sleeve holdings and linked target groups, valued in USD."""
+"""Confirmed ensemble holdings and portfolio target groups, valued in USD."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import math
 
 import pandas as pd
@@ -23,28 +23,11 @@ def date(value):
 
 
 @dataclass(frozen=True)
-class PairSpec:
-    asset1: str
-    asset2: str
-    calendar: str = "XNYS"
-    currency: str = "USD"
-
-    def __post_init__(self):
-        if not all(isinstance(v, str) and v.strip() for v in (self.asset1, self.asset2, self.calendar, self.currency)) or self.asset1 == self.asset2:
-            raise ValueError("pair needs two different assets, a calendar and a quote currency")
-
-    @property
-    def key(self):
-        return f"{self.asset1}~{self.asset2}"
-
-
-@dataclass(frozen=True)
 class FundConfig:
     mode: str = "demo"
-    account_key: str = "pairs-fund-demo"
+    account_key: str = "ensemble-fund-demo"
     execution_mode: str = "record_only"
-    pairs_budget_usd: float = 1_500_000.0
-    momentum_reserve_usd: float = 1_500_000.0
+    ensemble_budget_usd: float = 3_000_000.0
     central_cash_usd: float = 2_000_000.0
     maximum_fund_gross: float = 0.8
     maximum_name_gross: float = 0.2
@@ -54,64 +37,59 @@ class FundConfig:
     soft_drawdown_scale: float = 0.50
     fee_buffer_bps: float = 15.0
     collateral_buffer: float = 0.02
-    pairs_gross_fraction: float = 0.8
-    pair_minimum_rows: int = 60
-    formation_end: str = "2024-12-31"
-    require_formation_qualification: bool = True
-    entry_z: float = 1.25
-    exit_z: float = 0.10
-    stop_z: float = 3.50
-    max_holding_sessions: int = 45
-    holding_half_life_multiplier: float = 2.5
-    formation_adf_pvalue: float = 0.10
-    formation_min_correlation: float = 0.60
-    formation_min_half_life: float = 2.0
-    formation_max_half_life: float = 90.0
-    kalman_q: float = 1e-5
-    kalman_r: float = 1e-3
-    state_path: str = "runtime/pairs_fund.demo.sqlite"
-    report_directory: str = "runs/fund_agents/pairs_only/demo"
-    pairs: tuple[PairSpec, ...] = field(default_factory=lambda: (PairSpec("V", "MA"),))
+    allocation_method: str = "regime"
+    calendar: str = "XNYS"
+    currency: str = "USD"
+    minimum_history: int = 80
+    fast_window: int = 10
+    slow_window: int = 60
+    momentum_lookback: int = 60
+    momentum_rebalance: int = 10
+    momentum_top_k: int = 5
+    reversion_window: int = 20
+    reversion_entry_z: float = 2.0
+    reversion_exit_z: float = 0.2
+    reversion_stop_z: float = 3.5
+    state_path: str = "runtime/ensemble_fund.demo.sqlite"
+    report_directory: str = "runs/fund_agents/ensemble/demo"
+    universe: tuple[str, ...] = ("CAT", "DE", "UNP", "CSX", "V", "MA", "JNJ", "ABBV", "KO", "PEP", "XOM", "CVX", "JPM", "BAC")
+    benchmark: str = "SPY"
 
-    def __post_init__(self) -> None:
+    def __post_init__(self):
         if self.mode not in ("demo", "research") or self.execution_mode != "record_only" or not self.account_key:
             raise ValueError("fund supports demo/research with record_only execution")
         if self.risk_envelope not in ("standard", "conservative", "aggressive"):
-            raise ValueError("risk_envelope must be standard, conservative or aggressive")
-        for name in ("pairs_budget_usd",):
-            finite(getattr(self, name), name, 1e-12)
-        for name in ("momentum_reserve_usd", "central_cash_usd", "fee_buffer_bps"):
+            raise ValueError("invalid risk_envelope")
+        if self.allocation_method not in ("regime", "equal_weight", "risk_parity"):
+            raise ValueError("allocation_method must be regime, equal_weight or risk_parity")
+        if self.currency != "USD" or self.calendar != "XNYS":
+            raise ValueError("the fund adapter currently requires USD equities on XNYS sessions")
+        finite(self.ensemble_budget_usd, "ensemble_budget_usd", 1e-12)
+        for name in ("central_cash_usd", "fee_buffer_bps", "collateral_buffer"):
             finite(getattr(self, name), name, 0)
-        for name in ("maximum_fund_gross", "maximum_name_gross", "maximum_drawdown", "pairs_gross_fraction",
-                     "soft_drawdown", "soft_drawdown_scale"):
+        for name in ("maximum_fund_gross", "maximum_name_gross", "maximum_drawdown", "soft_drawdown", "soft_drawdown_scale"):
             finite(getattr(self, name), name, 1e-12)
             if getattr(self, name) > 1:
-                raise ValueError(f"{name} cannot exceed one in the initial unlevered mandate")
-        if self.soft_drawdown >= self.maximum_drawdown:
-            raise ValueError("soft_drawdown must be strictly below maximum_drawdown")
-        finite(self.collateral_buffer, "collateral_buffer", 0)
-        if self.collateral_buffer >= 1 or not (0 < self.exit_z < self.entry_z < self.stop_z):
-            raise ValueError("invalid collateral buffer or spread thresholds")
-        for name in ("entry_z", "exit_z", "stop_z", "kalman_q", "kalman_r", "holding_half_life_multiplier",
-                     "formation_min_half_life", "formation_max_half_life"):
+                raise ValueError(name + " cannot exceed one")
+        if self.soft_drawdown >= self.maximum_drawdown or self.collateral_buffer >= 1:
+            raise ValueError("invalid risk thresholds")
+        for name in ("minimum_history", "fast_window", "slow_window", "momentum_lookback", "momentum_rebalance", "momentum_top_k", "reversion_window"):
+            if type(getattr(self, name)) is not int or getattr(self, name) < 1:
+                raise ValueError(name + " must be a positive integer")
+        if self.fast_window >= self.slow_window or self.minimum_history < max(self.slow_window, self.momentum_lookback + 1, self.reversion_window, 60):
+            raise ValueError("insufficient history or invalid moving-average windows")
+        for name in ("reversion_entry_z", "reversion_exit_z", "reversion_stop_z"):
             finite(getattr(self, name), name, 1e-12)
-        for name in ("formation_adf_pvalue", "formation_min_correlation"):
-            finite(getattr(self, name), name, 1e-12)
-            if getattr(self, name) > 1:
-                raise ValueError(f"{name} cannot exceed one")
-        if self.formation_min_half_life >= self.formation_max_half_life:
-            raise ValueError("formation half-life bounds must increase")
-        for name, lower in (("pair_minimum_rows", 60), ("max_holding_sessions", 1)):
-            value = getattr(self, name)
-            if type(value) is not int or value < lower:
-                raise ValueError(f"{name} must be an integer >= {lower}")
-        date(self.formation_end)
-        if type(self.require_formation_qualification) is not bool or not self.pairs or len({p.key for p in self.pairs}) != len(self.pairs):
-            raise ValueError("invalid formation switch or duplicate/empty pairs")
+        if not self.reversion_exit_z < self.reversion_entry_z < self.reversion_stop_z:
+            raise ValueError("invalid mean-reversion thresholds")
+        if not self.universe or len(set(self.universe)) != len(self.universe) or self.benchmark in self.universe:
+            raise ValueError("universe must be unique, nonempty and exclude the benchmark")
+        if any(not isinstance(s, str) or not s.isalnum() or s != s.upper() for s in (*self.universe, self.benchmark)):
+            raise ValueError("the fund adapter requires explicit US equity ticker symbols")
 
     @property
-    def initial_nav_usd(self) -> float:
-        return self.pairs_budget_usd + self.momentum_reserve_usd + self.central_cash_usd
+    def initial_nav_usd(self):
+        return self.ensemble_budget_usd + self.central_cash_usd
 
 
 @dataclass(frozen=True)
@@ -138,12 +116,10 @@ class Holding:
     opened_on: str | None = None
 
     def __post_init__(self):
-        if self.pm != "pairs" or not self.group or not self.symbol:
+        if self.pm != "ensemble" or not self.group or not self.symbol:
             raise ValueError("unknown PM or empty holding identity")
         finite(self.units, "signed units")
         finite(self.entry_price_usd, "entry price", 1e-12)
-        if self.pm == "pairs" and self.units != 0 and self.opened_on is None:
-            raise ValueError("open pairs need an opened_on session for time stops")
         if self.opened_on is not None:
             date(self.opened_on)
 
@@ -151,47 +127,30 @@ class Holding:
 @dataclass(frozen=True)
 class FundSnapshot:
     as_of: str
-    pairs_cash_usd: float
-    momentum_cash_usd: float
+    ensemble_cash_usd: float
     central_cash_usd: float
     peak_nav_usd: float
     holdings: tuple[Holding, ...] = ()
-    fx_to_usd: tuple[tuple[str, float], ...] = (("USD", 1.0),)
-    fx_as_of: str | None = None
-    valuation_note: str = "Equity closes converted to USD using explicit snapshot FX quotes"
+    valuation_note: str = "Confirmed USD cash and signed USD equity holdings"
 
     def __post_init__(self):
         date(self.as_of)
-        for name in ("pairs_cash_usd", "momentum_cash_usd", "central_cash_usd"):
+        for name in ("ensemble_cash_usd", "central_cash_usd"):
             finite(getattr(self, name), name, 0)
         finite(self.peak_nav_usd, "peak NAV", 1e-12)
-        if self.fx_as_of is not None:
-            date(self.fx_as_of)
-        if len(dict(self.fx_to_usd)) != len(self.fx_to_usd) or dict(self.fx_to_usd).get("USD") != 1:
-            raise ValueError("FX quotes must be unique with USD=1")
-        for currency, rate in self.fx_to_usd:
-            finite(rate, currency + " FX conversion", 1e-12)
         identities = [(h.pm, h.group, h.symbol) for h in self.holdings]
         if len(set(identities)) != len(identities) or any(h.opened_on and h.opened_on > self.as_of for h in self.holdings):
             raise ValueError("duplicate holdings or future opening session")
 
     @classmethod
     def initial(cls, config, as_of):
-        return cls(as_of, config.pairs_budget_usd,
-                   config.momentum_reserve_usd, config.central_cash_usd, config.initial_nav_usd)
+        return cls(as_of, config.ensemble_budget_usd, config.central_cash_usd, config.initial_nav_usd)
 
     def group_holdings(self, pm, group):
         return tuple(h for h in self.holdings if (h.pm, h.group) == (pm, group))
 
     def units(self, pm, group, symbol):
         return next((h.units for h in self.group_holdings(pm, group) if h.symbol == symbol), 0.0)
-
-    def fx(self, currency):
-        if currency != "USD" and self.fx_as_of != self.as_of:
-            raise ValueError("non-USD pairs require FX quotes dated at the fund as_of")
-        if currency not in dict(self.fx_to_usd):
-            raise ValueError(f"missing {currency} to USD conversion")
-        return dict(self.fx_to_usd)[currency]
 
 
 @dataclass(frozen=True)
@@ -215,24 +174,15 @@ class TargetGroup:
     signal_session: str
     legs: tuple[TargetLeg, ...]
     reason: str
-    hedge_beta: float | None = None
     actionable: bool = True
 
     def __post_init__(self):
         date(self.as_of)
         date(self.signal_session)
-        if self.signal_session > self.as_of or not self.group or self.pm != "pairs":
+        if self.signal_session > self.as_of or not self.group or self.pm != "ensemble":
             raise ValueError("invalid target identity or future signal session")
         if not self.legs or len({l.symbol for l in self.legs}) != len(self.legs):
             raise ValueError("target group needs unique legs")
-        if self.pm == "pairs":
-            if len(self.legs) != 2 or self.hedge_beta is None:
-                raise ValueError("pair targets must carry both legs and their hedge beta")
-            finite(self.hedge_beta, "hedge beta")
-            if any(l.units != 0 for l in self.legs) and self.actionable:
-                first, second = (l.units * l.price_usd for l in self.legs)
-                if abs(first) < 1e-12 or not math.isclose(second, -self.hedge_beta * first, abs_tol=1e-6, rel_tol=1e-8):
-                    raise ValueError("pair target legs do not preserve the signed dollar hedge ratio")
 
     @property
     def gross_usd(self):
@@ -252,7 +202,7 @@ class PMProposal:
     evidence_sha256: str
 
     def __post_init__(self):
-        if self.pm != "pairs" or self.status not in ("READY", "INPUT_HOLD"):
+        if self.pm != "ensemble" or self.status not in ("READY", "INPUT_HOLD"):
             raise ValueError("invalid PM proposal")
         if any(g.pm != self.pm for g in self.groups) or len({g.group for g in self.groups}) != len(self.groups):
             raise ValueError("PM group identities must be unique and match their owner")

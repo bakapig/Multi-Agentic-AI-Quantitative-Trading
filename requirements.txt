@@ -1,3 +1,6 @@
-numpy>=1.26,<3
-pandas>=2.2,<4
-hmmlearn==0.3.3
+-r requirements-fund.txt
+-r requirements-momentum.txt
+backtrader==1.9.78.123
+tabulate>=0.9,<1
+pandas-datareader>=0.10,<1
+seaborn>=0.13,<1

@@ -3,8 +3,8 @@ Institutional Market Microstructure & Execution Parameters
 FE5209 Financial Econometrics Project
 
 Common library for:
-- Discrete board lot sizes (SGX: 100 shares, US/Europe: 1 share, Crypto: 0.0001)
-- Percentage-based commission fees (SGX: 12 bps, Europe: 8 bps, US: 3.5 bps, Crypto: 10 bps)
+- Discrete board lot sizes (SGX: 100 shares, US/Europe: 1 share)
+- Percentage-based commission fees (SGX: 12 bps, Europe: 8 bps, US: 3.5 bps)
 - Short borrow financing drag (daily borrow interest charged on short notional)
 - Execution slippage modeling (bid-ask half-spread impact)
 - Backtrader custom CommissionInfo & share quantization
@@ -30,10 +30,6 @@ def get_market_microstructure(ticker: str) -> Dict[str, Any]:
        - Lot size: 1 share
        - Transaction friction: 3.5 bps per side (institutional prime broker commission ~1 bps + bid-ask half spread ~2.5 bps)
        - Annual short borrow fee: 0.75% (75 bps, general collateral)
-    4. Digital Currencies (Crypto, -USD, -USDT):
-       - Lot size: 0.0001
-       - Transaction friction: 10.0 bps per side (exchange taker fee + slippage)
-       - Annual short borrow fee: 8.00% (800 bps crypto lending funding rate)
     """
     t = ticker.upper()
     if t.endswith(".SI"):
@@ -53,15 +49,6 @@ def get_market_microstructure(ticker: str) -> Dict[str, Any]:
             "tx_rate": 0.0008,
             "borrow_annual": 0.0125,
             "borrow_daily": 0.0125 / 252.0
-        }
-    elif "-USD" in t or "-USDT" in t:
-        return {
-            "market": "Digital Currency",
-            "lot_size": 0.0001,
-            "tx_bps": 10.0,
-            "tx_rate": 0.0010,
-            "borrow_annual": 0.08,
-            "borrow_daily": 0.08 / 252.0
         }
     else:
         return {
@@ -84,6 +71,7 @@ class MarketCommissionInfo(bt.CommInfoBase):
     params = (
         ("commission", 0.00035),    # Default: US 3.5 bps = 0.00035
         ("commtype", bt.CommInfoBase.COMM_PERC),
+        ("percabs", True),          # commission is already a decimal fraction
         ("stocklike", True),
         ("interest", 0.0075),        # Annual short borrow fee (0.75% for US)
         ("interest_long", False),    # No borrow interest on long positions
@@ -109,6 +97,7 @@ def create_market_commission(
         params = (
             ("commission", tx_rate),
             ("commtype", bt.CommInfoBase.COMM_PERC),
+            ("percabs", True),
             ("stocklike", True),
             ("interest", borrow_rate),
             ("interest_long", False),
@@ -123,7 +112,6 @@ def quantize_shares(target_dollars: float, price: float, lot_size: float) -> flo
     Quantizes target dollar demand into discrete shares respecting exchange board lot sizes:
     - SGX (.SI): Multiples of 100 shares
     - US / STOXX 600: Multiples of 1 share
-    - Crypto: Step size of 0.0001
     """
     if price <= 0.0 or target_dollars <= 0.0:
         return 0.0

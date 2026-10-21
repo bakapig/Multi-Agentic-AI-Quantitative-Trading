@@ -106,4 +106,8 @@ class TrendFollowingStrategy:
             "cumulative_return": np.cumprod(1.0 + daily_pnl) - 1.0
         }, index=dates)
 
+        # Closing-session targets are proposals for the next eligible session.
+        # Expose them without treating the simulated positions as real holdings.
+        res_df.attrs["target_weights"] = target_weights
+
         return res_df
