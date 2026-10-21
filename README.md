@@ -27,6 +27,9 @@ Its six-step tour and investor brief use one selected saved cycle. New
 - [Pairs-only integration verification](reports/fund_agents/pairs_only_verification_20261017.md)
 - [Updated investor speaking script](presentations/roadshow_20261017/Investor_System_Walkthrough_and_QA.docx)
 - [Presentation index and historical decks](presentations/README.md)
+- [Momentum strategy (trend + risk-parity core, GARCH-t volatility targeting, SGX assets included)](momentum/README.md):
+  separate paper strategy with its own daily update (`scripts/run_momentum_daily.py`) and outputs in `live/momentum/` and
+  `reports/momentum/`. It is not connected to `fund_agents` and does not use the fund risk limits.
 
 The teammate remote checked on 17 October remains at `5d42b04`; the numerical
 engines were already vendored. The current integration adds source verification,

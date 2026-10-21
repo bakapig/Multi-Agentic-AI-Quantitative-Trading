@@ -1,0 +1,7 @@
+benchmark,sharpe_blend,sharpe_bench,diff,ci_lo,ci_hi
+Core sleeve,0.632,0.56,0.072,-0.209,0.338
+Trend sleeve,0.632,0.459,0.173,-0.144,0.492
+EW buy&hold same 21,0.632,0.621,0.011,-0.389,0.408
+60/40 SPY/IEF,0.632,0.621,0.011,-0.38,0.409
+60/40 vol-targeted,0.632,0.684,-0.052,-0.388,0.293
+SPY (reference),0.632,0.546,0.086,-0.317,0.485

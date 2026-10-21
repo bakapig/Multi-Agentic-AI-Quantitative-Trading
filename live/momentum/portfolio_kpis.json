@@ -1,0 +1,22 @@
+{
+  "status": "ok",
+  "observations": 14,
+  "window": [
+    "2026-10-01",
+    "2026-10-20"
+  ],
+  "cumulative_return": -0.023441896256674588,
+  "ann_return": -0.34752242689553936,
+  "ann_vol": 0.10965448876407344,
+  "sharpe_ex_rf": -4.2082956903546345,
+  "max_dd": -0.03712817573289451,
+  "dd_episodes": 1,
+  "days": 14,
+  "calmar": -9.360072775879596,
+  "n_trades": 0,
+  "win_rate": null,
+  "avg_hold_days": null,
+  "profit_per_trade": null,
+  "ann_turnover": 4.8277302935844295,
+  "note": "Few observations: ratios are not statistically meaningful. Trade stats count trades opened inside the window."
+}

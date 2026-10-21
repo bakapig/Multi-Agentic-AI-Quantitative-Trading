@@ -1,0 +1,4 @@
+strategy,alpha_ann,alpha_t,beta_SPY,beta_IEF,r2
+BLEND 50/50,0.024,1.419,0.234,0.341,0.27
+Core sleeve,0.01,0.559,0.43,0.515,0.507
+Trend sleeve,0.038,1.717,0.037,0.168,0.014
