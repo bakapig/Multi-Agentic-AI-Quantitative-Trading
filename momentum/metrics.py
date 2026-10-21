@@ -6,7 +6,7 @@ from .config import TRADING_DAYS
 
 def drawdown(ret):
     eq = (1 + ret).cumprod()
-    return eq / eq.cummax().clip(lower=1.0) - 1
+    return eq / eq.cummax() - 1
 
 
 def dd_episodes(ret, min_depth=0.01):

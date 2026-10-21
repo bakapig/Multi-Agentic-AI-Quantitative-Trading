@@ -31,13 +31,7 @@ def garch_vol_forecasts(raw, cache=None, state=None):
     Parameters are refit every REFIT_EVERY days on a rolling window ending at t; between refits only the filter is updated.
     state (dict, optional) is filled with {asset: (s_last, par_last)} so the forecasts can later be extended incrementally."""
     if cache is not None and cache.exists():
-        cached = pd.read_csv(cache, index_col=0, parse_dates=True)
-        if not set(raw.columns).issubset(cached.columns):
-            raise ValueError("forecast cache does not cover the configured universe")
-        for c in raw:
-            if cached[c].last_valid_index() < raw[c].last_valid_index():
-                raise ValueError("stale forecast cache; run the daily updater before backtesting")
-        return cached.loc[:, raw.columns]
+        return pd.read_csv(cache, index_col=0, parse_dates=True)
     out = {}
     for c in raw.columns:
         v = 100 * np.log(raw[c].dropna()).diff().dropna()

@@ -1,27 +1,8 @@
 {
-  "strategy": "50% time-series trend + 50% inverse-volatility core",
-  "assets": [
-    "SPY",
-    "QQQ",
-    "TLT",
-    "GLD",
-    "USO",
-    "ES3.SI",
-    "D05.SI",
-    "O39.SI",
-    "U11.SI",
-    "EFA",
-    "EEM",
-    "EWJ",
-    "IEF",
-    "LQD",
-    "HYG",
-    "DBC",
-    "DBA",
-    "CPER",
-    "UUP",
-    "FXY"
-  ],
+  "strategy": "50% trend sleeve + 50% risk-parity core, GARCH(1,1)-t volatility targeting",
+  "frozen_from": "2026-10-01",
+  "source": "momentum/config.py",
+  "config_sha256": "0049e02a5704bea8acecf0ef4073dc6dc481c3a2219604648e2f911e596631f2",
   "parameters": {
     "CORE_ASSETS": [
       "SPY",
@@ -29,6 +10,7 @@
       "TLT",
       "GLD",
       "USO",
+      "BTC-USD",
       "ES3.SI",
       "D05.SI",
       "O39.SI",
@@ -47,33 +29,12 @@
       "UUP",
       "FXY"
     ],
-    "ASSETS": [
-      "SPY",
-      "QQQ",
-      "TLT",
-      "GLD",
-      "USO",
-      "ES3.SI",
-      "D05.SI",
-      "O39.SI",
-      "U11.SI",
-      "EFA",
-      "EEM",
-      "EWJ",
-      "IEF",
-      "LQD",
-      "HYG",
-      "DBC",
-      "DBA",
-      "CPER",
-      "UUP",
-      "FXY"
-    ],
     "DATA_START": "2004-01-01",
     "EVAL_START": "2006-01-02",
     "COST_BPS": {
       "default": 10,
-      ".SI": 25
+      ".SI": 25,
+      "BTC-USD": 20
     },
     "FIN_SPREAD": 0.005,
     "LOOKBACKS": [
@@ -99,7 +60,5 @@
     "VALIDATION_END": "2023-09-30",
     "SEEN_END": "2026-09-30",
     "TEST_START": "2026-10-01"
-  },
-  "config_sha256": "4f9f49c0bfba95b543c93e144197bb7921088a73279359cb40e4668d055c24dd",
-  "note": "Recomputed for the configured 20-asset universe; no October parameter optimization."
+  }
 }

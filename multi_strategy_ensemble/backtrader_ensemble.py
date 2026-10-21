@@ -491,6 +491,12 @@ def run_backtrader_multi_strategy_suite(
     feed_idx = warm_idx.append(oos_idx)
     trade_start = pd.to_datetime(start_date).date() if warmup_bars > 0 else None
 
+    # Prepend warm-up history (indicator formation only)
+    pre_idx = common_idx[common_idx < pd.to_datetime(start_date)]
+    warm_idx = pre_idx[-warmup_bars:] if warmup_bars > 0 else pre_idx[:0]
+    feed_idx = warm_idx.append(oos_idx)
+    trade_start = pd.to_datetime(start_date).date() if warmup_bars > 0 else None
+
     # Filter active tickers with non-zero variance (removes delisted symbols)
     min_obs = min(30, len(feed_idx))
     valid_cols = [

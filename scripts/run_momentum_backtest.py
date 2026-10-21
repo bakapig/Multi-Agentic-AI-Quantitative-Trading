@@ -1,6 +1,6 @@
 """Full evaluation of the frozen strategy: performance vs corrected benchmarks, bootstrap, factor regression (L3), VaR/ES backtest (L7),
 stationarity (L5), brief metrics, live test window. Usage: python scripts/run_momentum_backtest.py"""
-import sys, warnings, hashlib, json; warnings.filterwarnings("ignore")
+import sys, warnings; warnings.filterwarnings("ignore")
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import numpy as np, pandas as pd
@@ -16,16 +16,6 @@ from momentum.garch import fit, filter_h
 from momentum.metrics import summary, drawdown, kupiec, christoffersen_ind, block_bootstrap_sharpe
 
 px, irx = download()
-RES.mkdir(parents=True, exist_ok=True)
-import momentum.config as frozen_config
-frozen = {name: value for name, value in vars(frozen_config).items()
-          if name.isupper() and isinstance(value, (str, int, float, list, dict))}
-(RES / 'PARAMETER_MANIFEST.json').write_text(json.dumps({
-    'strategy': '50% time-series trend + 50% inverse-volatility core',
-    'assets': ASSETS, 'parameters': frozen,
-    'config_sha256': hashlib.sha256((ROOT / 'momentum/config.py').read_bytes()).hexdigest(),
-    'note': 'Recomputed for the configured 20-asset universe. Remaining parameters were retained; no October optimization.'
-}, indent=2))
 raw, ff = weekday_panel(px)
 rf = rf_daily(irx, ff.index)
 gv = garch_vol_forecasts(raw, DATA / "garch_vol_forecasts.csv")
@@ -47,7 +37,7 @@ b6040 = 0.6 * r["SPY"] + 0.4 * r["IEF"]
 k = (0.082 / (b6040.rolling(60).std().shift(1) * np.sqrt(TRADING_DAYS))).clip(upper=2.0).fillna(1.0)   # ex-ante leverage; 8.2% = blend's realised vol level
 b6040_vt = k * b6040 + (1 - k).clip(lower=0) * rf - fin_of(k)
 ew = r.where(raw.notna().cumsum() > GARCH_MIN_OBS).mean(axis=1)
-S = pd.DataFrame({"BLEND 50/50": R["net"], "Core sleeve": R["core"], "Trend sleeve": R["trend"], "EW buy&hold same 20": ew,
+S = pd.DataFrame({"BLEND 50/50": R["net"], "Core sleeve": R["core"], "Trend sleeve": R["trend"], "EW buy&hold same 21": ew,
                   "60/40 SPY/IEF": b6040, "60/40 vol-targeted": b6040_vt, "SPY (reference)": r["SPY"]}).loc[S0:].dropna()
 
 periods = {"full": (None, None), "validation<=2023-09": (None, VALIDATION_END), "seen 2023-10..2026-09": ("2023-10-01", SEEN_END),
@@ -109,7 +99,7 @@ print("\nVaR backtest\n", VAR.to_string(index=False))
 
 # ---- plots / saved series
 fig, ax = plt.subplots(2, 1, figsize=(11, 8), sharex=True)
-(1 + S[["BLEND 50/50", "Core sleeve", "Trend sleeve", "60/40 vol-targeted", "EW buy&hold same 20", "SPY (reference)"]]).cumprod().plot(ax=ax[0], logy=True)
+(1 + S[["BLEND 50/50", "Core sleeve", "Trend sleeve", "60/40 vol-targeted", "EW buy&hold same 21", "SPY (reference)"]]).cumprod().plot(ax=ax[0], logy=True)
 ax[0].axvline(pd.Timestamp("2023-10-01"), ls="--", c="k"); ax[0].set_title("Net of costs and financing (dashed = start of already-inspected window)")
 drawdown(S["BLEND 50/50"]).plot(ax=ax[1], title="Blend drawdown"); plt.tight_layout(); plt.savefig(RES / "equity_drawdown.png", dpi=110)
 S.to_csv(RES / "daily_returns.csv"); R["W"].to_csv(RES / "weights_blend.csv")

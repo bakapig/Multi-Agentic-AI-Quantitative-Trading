@@ -1,6 +1,6 @@
 {
   "last_close": "2026-10-20",
-  "run_utc": "2026-10-21T00:00:00+00:00",
+  "run_utc": "2026-10-21T00:18:26+00:00",
   "garch_update": "incremental",
   "refreshed": false,
   "history_drift": {
@@ -9,6 +9,6 @@
   },
   "orders_enabled": false,
   "execution": "paper: signal at close t, fill at close t+1 (lag 2)",
-  "n_assets": 20,
-  "config_sha256": "4f9f49c0bfba95b543c93e144197bb7921088a73279359cb40e4668d055c24dd"
+  "n_assets": 21,
+  "config_sha256": "0049e02a5704bea8acecf0ef4073dc6dc481c3a2219604648e2f911e596631f2"
 }

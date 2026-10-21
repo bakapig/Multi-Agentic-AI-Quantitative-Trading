@@ -13,11 +13,12 @@ from .metrics import summary
 
 CACHE, STATE = DATA / "garch_vol_forecasts.csv", DATA / "garch_state.json"
 DRIFT_TOL = 1e-5                       # Yahoo adjusted-price rounding noise is ~1e-6 in daily log returns; larger = genuine revision
-ANCHORS = ("SPY", "D05.SI")   # Both US and SGX must have posted the final bar
+ANCHORS = ("SPY", "D05.SI", "BTC-USD")   # US, SGX and crypto must all have posted the final bar
 
 
 def drop_incomplete(s, now=None):
-    """Keep bars dated strictly before today's UTC date; today's US/SGX bar may be incomplete."""
+    """Keep bars dated strictly before today's UTC date. Yahoo's BTC-USD bar for the current UTC day is still forming,
+    and a US/SGX bar for today may be incomplete."""
     now = now or datetime.now(timezone.utc)
     return s[s.index < pd.Timestamp(now.date())]
 
@@ -143,7 +144,7 @@ def main(argv=None):
     print(f"Gross {tw.abs().sum():.2f}x, net {tw.sum():.2f}x")
 
     pd.DataFrame({"ticker": ASSETS, "sleeve_group": ["core"] * len(CORE_ASSETS) + ["breadth"] * len(BREADTH_ASSETS),
-                  "market": ["SGX" if c.endswith(".SI") else "US-listed" for c in ASSETS]}).to_csv(LIVE / "assets.csv", index=False)
+                  "market": ["SGX" if c.endswith(".SI") else "crypto" if c == "BTC-USD" else "US-listed" for c in ASSETS]}).to_csv(LIVE / "assets.csv", index=False)
     px.loc[TEST_START:].to_csv(LIVE / "portfolio_closing_prices.csv", index_label="Date")
     t = R["net"].loc[TEST_START:]
     kpi = dict(status="awaiting_test_window", observations=0)

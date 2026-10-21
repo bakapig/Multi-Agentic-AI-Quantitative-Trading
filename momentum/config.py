@@ -5,13 +5,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA, RES, LIVE = ROOT / "data" / "momentum", ROOT / "reports" / "momentum", ROOT / "live" / "momentum"
 
-CORE_ASSETS = ["SPY", "QQQ", "TLT", "GLD", "USO", "ES3.SI", "D05.SI", "O39.SI", "U11.SI"]
+CORE_ASSETS = ["SPY", "QQQ", "TLT", "GLD", "USO", "BTC-USD", "ES3.SI", "D05.SI", "O39.SI", "U11.SI"]
 BREADTH_ASSETS = ["EFA", "EEM", "EWJ", "IEF", "LQD", "HYG", "DBC", "DBA", "CPER", "UUP", "FXY"]
 ASSETS = CORE_ASSETS + BREADTH_ASSETS
 DATA_START = "2004-01-01"
 EVAL_START = "2006-01-02"
 
-COST_BPS = {"default": 10, ".SI": 25}
+COST_BPS = {"default": 10, ".SI": 25, "BTC-USD": 20}
 FIN_SPREAD = 0.005                      # financing spread over rf on gross exposure above 1x NAV
 
 LOOKBACKS = [63, 126, 252]              # trend signal: mean of sign(log return over L days)

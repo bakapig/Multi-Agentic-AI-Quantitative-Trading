@@ -30,4 +30,4 @@ Register-ScheduledTask `
     -Force
 
 Write-Host "Installed '$TaskName' for $LocalRunTime local time."
-Write-Host "For Singapore time, 09:30 is after the US close. The runner drops any final date lacking a US or SGX anchor bar."
+Write-Host "For Singapore time, 09:30 is after the US close and the 00:00 UTC (08:00 SGT) crypto rollover. The runner also drops any final date lacking a US, SGX or BTC bar."

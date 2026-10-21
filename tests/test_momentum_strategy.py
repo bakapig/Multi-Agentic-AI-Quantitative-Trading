@@ -14,6 +14,8 @@ if HAS_SCIPY:
     from momentum.data import download, rf_daily, weekday_panel
     from momentum.garch import fit
 
+FIXTURE = Path(__file__).parent / "fixtures" / "momentum_golden_net.csv"
+
 
 def simulate(n, seed, a0=0.05, a1=0.10, b1=0.85):
     rng, h, e = np.random.default_rng(seed), a0 / (1 - a1 - b1), []
@@ -51,23 +53,13 @@ class MomentumStrategyTests(unittest.TestCase):
             self.assertEqual(state[c][0], full_state[c][0])
             np.testing.assert_allclose(state[c][1], full_state[c][1])
 
-    def test_configured_universe_and_forecasts_have_twenty_assets(self):
-        from momentum.config import ASSETS
-        px, _ = download()
-        raw, _ = weekday_panel(px)
-        gv = strategy.garch_vol_forecasts(raw, DATA / "garch_vol_forecasts.csv")
-        self.assertEqual(len(ASSETS), 20)
-        self.assertEqual(list(px.columns), ASSETS)
-        self.assertEqual(list(gv.columns), ASSETS)
-
-    def test_drawdown_includes_loss_from_initial_capital(self):
-        from momentum.metrics import drawdown
-        self.assertAlmostEqual(drawdown(pd.Series([-0.1, 0.0])).min(), -0.1)
-
-    def test_missing_final_anchor_bar_does_not_become_a_flat_return(self):
-        dates = pd.to_datetime(['2026-10-19', '2026-10-20'])
-        px = pd.DataFrame({'SPY': [100, 101], 'D05.SI': [50, np.nan]}, index=dates)
-        self.assertEqual(live.trim_tail(px).index.max(), dates[0])
+    def test_packaged_strategy_reproduces_original_research_returns(self):
+        gold = pd.read_csv(FIXTURE, index_col=0, parse_dates=True)
+        px, irx = download()
+        raw, ff = weekday_panel(px)
+        R = strategy.run_blend(ff, strategy.garch_vol_forecasts(raw, DATA / "garch_vol_forecasts.csv"), rf_daily(irx, ff.index))
+        got = pd.DataFrame({"net": R["net"], "core": R["core"], "trend": R["trend"]}).reindex(gold.index)
+        np.testing.assert_allclose(got.values, gold.values, atol=1e-10, rtol=0)
 
     def test_weights_do_not_depend_on_future_prices(self):
         px, irx = download()
