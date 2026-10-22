@@ -2353,3 +2353,274 @@ dialog::backdrop {
 @media(max-width:1150px){.hunt-hero{grid-template-columns:1fr 1fr;padding:26px;gap:20px}.hunt-hero h2{font-size:32px}.hunt-flow{grid-template-columns:repeat(3,1fr)}.research-toolbar-tail{width:100%;margin-left:30px}.metric-value{font-size:27px}}
 @media(max-width:850px){.hunt-hero{grid-template-columns:1fr}.mandate-card{display:none}.hunt-hero h2{font-size:34px}.governance-strip{grid-template-columns:1fr}.hunt-flow{grid-template-columns:1fr 1fr}.research-toolbar-tail{margin-left:0}.chart-legend small{width:100%;margin-left:0}.chart-tooltip{left:15px;bottom:0;max-width:90%;font-size:10px}.status-list>div{align-items:flex-start}}
 @media(max-width:520px){.hunt-hero h2{font-size:31px}.hunt-hero p{font-size:12px}.hero-actions{flex-wrap:wrap}.research-toolbar{padding:13px;gap:8px}.research-toolbar strong{font-size:11px}.research-toolbar-tail{font-size:10px}.hunt-flow{grid-template-columns:1fr}.backtest-controls button{margin-left:0}.research-chart svg{min-height:150px}.allocation-list>div{grid-template-columns:100px 1fr 34px;gap:8px;font-size:11px}.brand-word{font-size:23px}.metric-value{font-size:25px}}
+
+
+/* Investor Demo & Portfolio Styles */
+.gain-pos {
+  color: #087f79;
+  font-weight: 600;
+}
+.gain-neg {
+  color: #c5221f;
+  font-weight: 600;
+}
+.briefing-panel {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: 9px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.briefing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #f0f3f6;
+  padding-bottom: 12px;
+}
+.briefing-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.briefing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #eaf4f1;
+  color: #087f79;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.briefing-badge .icon {
+  width: 14px;
+  height: 14px;
+}
+.briefing-header h3 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.briefing-date {
+  font-size: 12px;
+  color: var(--muted);
+}
+.briefing-body p {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #38485c;
+}
+.briefing-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Positions Table */
+.positions-table th {
+  padding: 12px 14px;
+  font-size: 9px;
+  letter-spacing: 0.6px;
+}
+.positions-table td {
+  padding: 14px 14px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.asset-cell {
+  display: flex;
+  flex-direction: column;
+}
+.asset-cell strong {
+  font-size: 13px;
+  color: var(--ink);
+}
+.asset-cell small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.weight-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.weight-cell strong {
+  min-width: 42px;
+  font-size: 12px;
+}
+.weight-bar {
+  flex: 1;
+  height: 6px;
+  background: #eef2f5;
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 100px;
+}
+.weight-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* Executed Orders */
+.executed-trades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.trade-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+.trade-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.trade-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trade-card-heading h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+.trade-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+.ai-rationale-box {
+  background: #f7faf9;
+  border-left: 3px solid #087f79;
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  margin-top: 10px;
+}
+.ai-rationale-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #087f79;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.ai-rationale-title .icon {
+  width: 14px;
+  height: 14px;
+}
+.ai-rationale-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #42526e;
+  margin: 0;
+}
+
+/* Strategy Options in Risk View */
+.strategy-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 18px 0;
+}
+.strategy-opt-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.strategy-opt-card.active-opt {
+  border-color: #087f79;
+  box-shadow: 0 0 0 1px #087f79;
+}
+.strategy-opt-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.strategy-opt-top h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--ink);
+}
+.strategy-opt-top p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.strategy-opt-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.strategy-opt-metric small {
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+}
+.strategy-opt-metric strong {
+  font-size: 13px;
+  color: var(--ink);
+}
+.strategy-opt-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #eef2f5;
+}
+.strategy-opt-bar span {
+  height: 100%;
+}
+.strategy-opt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.strategy-opt-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.strategy-opt-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.strategy-opt-rationale {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #4a5b70;
+  border-top: 1px solid #f0f3f6;
+  padding-top: 10px;
+  margin: 0;
+}
