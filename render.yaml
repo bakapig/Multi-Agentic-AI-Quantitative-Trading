@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: alphahunt-capital-portal
+    env: python
+    buildCommand: pip install -r requirements.txt -r requirements-fund.txt
+    startCommand: python -m fund_agents.dashboard
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: HOST
+        value: 0.0.0.0

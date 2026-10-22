@@ -9,6 +9,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import math
+import os
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from .investor import build_investor_data
@@ -98,12 +99,13 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--host", type=str, default=os.environ.get("HOST", "127.0.0.1"))
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8765")))
     parser.add_argument("--reports", type=Path, default=ROOT / "runs/fund_agents")
     parser.add_argument("--backtest", type=Path, default=ROOT / "reports/october_2026")
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(DashboardHandler, report_directory=args.reports.resolve(), backtest_directory=args.backtest.resolve()))
-    print(f"AlphaHunt Capital: http://127.0.0.1:{server.server_port} (ensemble research)", flush=True)
+    server = ThreadingHTTPServer((args.host, args.port), partial(DashboardHandler, report_directory=args.reports.resolve(), backtest_directory=args.backtest.resolve()))
+    print(f"AlphaHunt Capital: http://{args.host}:{server.server_port} (ensemble research)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
