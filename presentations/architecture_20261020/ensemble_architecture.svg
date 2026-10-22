@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+<title id="title">Where AI fits in Meridian</title>
+<desc id="desc">Strategies, regime rules, allocation, fund risk, Phantom Book, orchestration, validation, storage and the web app are non-AI code. Analyst and Chair are AI-ready interfaces with code-generated reviews today. An optional external LLM can supply imported replies. Automatic LLM calls are not connected. Zero fills.</desc>
+<rect x="0" y="0" width="1920" height="1080" rx="0" fill="#F4F7FC" stroke="#F4F7FC" stroke-width="1.4"/>
+<text x="80" y="65" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#635BFF">MERIDIAN / DIGITAL INVESTMENT OFFICE</text>
+<text x="80" y="131" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700" fill="#14243B">Where AI fits in the architecture</text>
+<text x="80" y="170" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="400" fill="#56677D">Numerical code makes portfolio decisions. Automatic LLM calls are not connected.</text>
+<text x="1590" y="65" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#56677D">20 OCTOBER 2026</text>
+<rect x="80" y="204" width="1760" height="62" rx="12" fill="#FFF1D5" stroke="#FFF1D5" stroke-width="1.4"/>
+<text x="106" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#916000">HUMAN OWNERSHIP</text>
+<text x="350" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="400" fill="#14243B">Universe, allocation policy and risk limits</text>
+<text x="1175" y="244" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="700" fill="#635BFF">$3M ensemble  +  $2M central cash</text>
+<rect x="80" y="292" width="1110" height="638" rx="18" fill="#EDF6F3" stroke="#CEDFD9" stroke-width="1.4"/>
+<text x="112" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#087F6D">LANE 1 / NON-AI QUANTITATIVE CODE</text>
+<text x="930" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="400" fill="#087F6D">Rules + mathematics</text>
+<rect x="112" y="348" width="1036" height="62" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<text x="136" y="386" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#14243B">Data + validation | NON-AI</text>
+<text x="500" y="386" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="400" fill="#56677D">USD equity closes + SPY; completed sessions</text>
+<polyline points="630,410 630,430" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polyline points="276,430 983,430" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polyline points="276,430 276,450" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polygon points="276,450 270,441 282,441" fill="#A0ADC0"/>
+<polyline points="630,430 630,450" fill="none" stroke="#A0ADC0" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="630,450 624,441 636,441" fill="#A0ADC0"/>
+<polyline points="983,430 983,450" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polygon points="983,450 977,441 989,441" fill="#A0ADC0"/>
+<rect x="112" y="450" width="329" height="99" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="128" y="470" width="4" height="59" rx="2" fill="#087F6D" stroke="#087F6D" stroke-width="1.4"/>
+<text x="146" y="487" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Trend | NON-AI</text>
+<text x="146" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">MA 10 / 60 + market filter</text>
+<rect x="465" y="450" width="329" height="99" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.4" stroke-dasharray="6 5"/>
+<rect x="481" y="470" width="4" height="59" rx="2" fill="#56677D" stroke="#56677D" stroke-width="1.4"/>
+<text x="499" y="487" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#64748B">Momentum | IGNORED</text>
+<text x="499" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#94A3B8">Excluded: losing money (-2.35%)</text>
+<rect x="818" y="450" width="330" height="99" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="834" y="470" width="4" height="59" rx="2" fill="#087F6D" stroke="#087F6D" stroke-width="1.4"/>
+<text x="852" y="487" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Reversion | NON-AI</text>
+<text x="852" y="517" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Equity spread Z-scores</text>
+<polyline points="276,549 276,569" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polyline points="983,549 983,569" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polyline points="276,569 983,569" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polyline points="630,569 630,590" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polygon points="630,590 624,581 636,581" fill="#A0ADC0"/>
+<rect x="112" y="590" width="1036" height="91" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="128" y="610" width="4" height="51" rx="2" fill="#087F6D" stroke="#087F6D" stroke-width="1.4"/>
+<text x="146" y="627" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Ensemble PM + regime rules | NON-AI</text>
+<text x="146" y="657" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Regime / equal weight / inverse volatility  |  Aggregate shared symbols</text>
+<polyline points="630,681 630,695 362,695 362,714" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polygon points="362,714 356,705 368,705" fill="#A0ADC0"/>
+<rect x="112" y="714" width="500" height="105" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="128" y="734" width="4" height="65" rx="2" fill="#087F6D" stroke="#087F6D" stroke-width="1.4"/>
+<text x="146" y="751" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Fund risk | NON-AI</text>
+<text x="146" y="781" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Exposure caps + drawdown controls</text>
+<text x="146" y="808" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Phantom Book = exposure arithmetic</text>
+<polyline points="612,767 647,767" fill="none" stroke="#A0ADC0" stroke-width="2"/>
+<polygon points="647,767 638,761 638,773" fill="#A0ADC0"/>
+<rect x="647" y="714" width="501" height="105" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="663" y="734" width="4" height="65" rx="2" fill="#087F6D" stroke="#087F6D" stroke-width="1.4"/>
+<text x="681" y="751" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Intention records | NON-AI</text>
+<text x="681" y="781" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Exact approval + confirmed snapshot</text>
+<text x="681" y="808" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">No broker orders; zero fills</text>
+<text x="112" y="857" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="400" fill="#087F6D">Signals, allocations and approvals are computed by numerical code.</text>
+<text x="112" y="894" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">FundCoordinator: fixed sequence in one Python process (NON-AI).</text>
+<rect x="1226" y="292" width="614" height="638" rx="18" fill="#F1EEFC" stroke="#DCD5F2" stroke-width="1.4"/>
+<text x="1258" y="328" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#635BFF">LANE 2 / AI-READY ADVISORY ROLES</text>
+<rect x="1258" y="348" width="550" height="105" rx="12" fill="#635BFF" stroke="#635BFF" stroke-width="1.4"/>
+<text x="1292" y="385" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#FFFFFF">Optional external LLM | AI</text>
+<text x="1292" y="415" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#FFFFFF">AI-generated replies can be imported</text>
+<text x="1292" y="442" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">Automatic calls: NOT CONNECTED</text>
+<polyline points="1533,453 1533,493" fill="none" stroke="#635BFF" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="1533,493 1527,484 1539,484" fill="#635BFF"/>
+<rect x="1258" y="493" width="550" height="99" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="1274" y="513" width="4" height="59" rx="2" fill="#635BFF" stroke="#635BFF" stroke-width="1.4"/>
+<text x="1292" y="530" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Ensemble analyst | AI-READY</text>
+<text x="1292" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Today: read-only tools + code summary</text>
+<polyline points="1533,592 1533,627" fill="none" stroke="#635BFF" stroke-width="2"/>
+<polygon points="1533,627 1527,618 1539,618" fill="#635BFF"/>
+<rect x="1258" y="627" width="550" height="99" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="1274" y="647" width="4" height="59" rx="2" fill="#635BFF" stroke="#635BFF" stroke-width="1.4"/>
+<text x="1292" y="664" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Committee Chair | AI-READY</text>
+<text x="1292" y="694" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Today: read-only tools + code summary</text>
+<polyline points="1533,726 1533,751" fill="none" stroke="#697A91" stroke-width="2"/>
+<polygon points="1533,751 1527,742 1539,742" fill="#697A91"/>
+<rect x="1258" y="751" width="550" height="99" rx="12" fill="#FFFFFF" stroke="#DCE3EF" stroke-width="1.4"/>
+<rect x="1274" y="771" width="4" height="59" rx="2" fill="#697A91" stroke="#697A91" stroke-width="1.4"/>
+<text x="1292" y="788" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">Shared claim checks | NON-AI</text>
+<text x="1292" y="818" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="400" fill="#56677D">Facts digest + metrics; used by both roles</text>
+<polyline points="1148,767 1207,767 1207,543 1258,543" fill="none" stroke="#8A7BC9" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="1258,543 1249,537 1249,549" fill="#8A7BC9"/>
+<text x="1154" y="690" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#56677D">FACTS</text>
+<text x="1258" y="876" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="400" fill="#635BFF">AI commentary has zero trading authority.</text>
+<text x="1258" y="905" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="400" fill="#56677D">Dashed arrows: optional replies / read-only facts.</text>
+<rect x="80" y="956" width="1760" height="70" rx="14" fill="#E3E9F2" stroke="#E3E9F2" stroke-width="1.4"/>
+<text x="108" y="1000" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="700" fill="#14243B">SQLite + JSON storage + investor web app | NON-AI INFRASTRUCTURE</text>
+<text x="1660" y="1000" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#087F6D">ZERO FILLS</text>
+<text x="80" y="1054" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="400" fill="#56677D">GREEN: NON-AI CODE   |   PURPLE: AI-READY ROLES / OPTIONAL AI   |   GRAY: NON-AI VALIDATION + INFRASTRUCTURE</text>
+</svg>

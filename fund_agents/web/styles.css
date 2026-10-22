@@ -939,7 +939,7 @@ select {
   font-size:17px;
   flex-shrink:0
 }
-.pm-card.pairs .pm-icon {
+.pm-card.ensemble .pm-icon {
   background:#edf7ff;
   border-color:#daedf9;
   color:#248bbb
@@ -2273,6 +2273,6 @@ dialog::backdrop {
   padding-left:19px;
   margin:0
 }
-#pairs-evidence {
+#ensemble-evidence {
   scroll-margin-top:90px
 }

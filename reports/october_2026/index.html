@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><title>October strategy backtests</title><style>body{font:16px system-ui;background:#f3f6fa;color:#152b3c;margin:0;padding:36px}main{max-width:1180px;margin:auto;background:white;padding:32px;border-radius:16px}h1{margin-top:0}h2{margin-top:32px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:12px 8px;border-bottom:1px solid #dde5ed;text-align:right}th:first-child,td:first-child{text-align:left}img{width:100%}.notice{background:#fff3db;padding:18px;border-radius:8px}li{margin-bottom:10px}a{color:#087f8c}</style></head><body><main><h1>Ensemble & momentum backtests</h1><p>October 1–20, 2026 · Research simulations · No confirmed fund fills</p><p class="notice">14 trading sessions. Complete closing marks for both universes; missing daily bars were recovered from dated closing sources. Different execution and start-position conventions apply.</p><h2>October 1–20 results</h2><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>strategy</th>
+      <th>start</th>
+      <th>end</th>
+      <th>assets</th>
+      <th>total_return_pct</th>
+      <th>max_drawdown_pct</th>
+      <th>annualized_sharpe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Original dynamic ensemble</td>
+      <td>2026-10-01</td>
+      <td>2026-10-20</td>
+      <td>878</td>
+      <td>4.485</td>
+      <td>-1.165</td>
+      <td>6.763</td>
+    </tr>
+    <tr>
+      <td>New momentum (20 assets)</td>
+      <td>2026-10-01</td>
+      <td>2026-10-20</td>
+      <td>20</td>
+      <td>-2.346</td>
+      <td>-3.674</td>
+      <td>-4.232</td>
+    </tr>
+    <tr>
+      <td>SPY buy-and-hold</td>
+      <td>2026-10-01</td>
+      <td>2026-10-20</td>
+      <td>1</td>
+      <td>0.842</td>
+      <td>-2.033</td>
+      <td>1.221</td>
+    </tr>
+  </tbody>
+</table><img src="comparison.png" alt="Net cumulative returns and drawdown"><h2>Calculation details</h2><ul><li>Research simulations only; the fund adapter still records intentions with zero confirmed fills.</li><li>Original ensemble: existing Backtrader strategies and regime allocations, 120 warm-up bars, starts in cash on October 1. Ensemble NAVs blend standalone sleeve returns; no separate allocator turnover fee is modeled.</li><li>Original execution: existing same-close (cheat-on-close) assumption, synthetic high/low at close +/-0.5%, 2 bp slippage, market-specific fees, board lots and short borrow. This is optimistic compared with a tradable next-session simulation.</li><li>Backtrader decimal commission units corrected with percabs=True; the previous fee conversion charged 1/100 of the intended rate. Return accounting includes the starting capital and September 30 benchmark close; inverse-vol weights use prior observations.</li><li>Original 60-day sleeve risk-parity estimator has fewer than 60 trading observations here; its existing 0.01 fallback gives equal sleeve weights throughout the short test.</li><li>New momentum: fixed 50% time-series trend / 50% long-only inverse-volatility core, existing GARCH-t forecasts, 10% target annual volatility, 3x gross cap, lag=2, trading costs and rf+50bp financing above 1x gross. Carries pre-October model positions into the test.</li><li>Removing one holding changes the momentum portfolio. No remaining signal, volatility, trading-band or cost parameters were tuned on October results.</li><li>Momentum weights are continuous research weights without board-lot rounding. Both research engines mix local-currency asset returns without an FX conversion model; normalized results are not fully reconciled USD account returns.</li><li>Own-market holidays are carried forward in momentum; open-market missing quotes are rejected. The ensemble verified subset has observed closes on every SPY session; excluded assets are listed separately.</li><li>Annualized Sharpe and volatility use only 13 or 14 observations and are descriptive, not evidence of persistent performance. SPY excludes benchmark transaction costs.</li><li>Historical caches and pretrained forecasts are supplied research inputs, not an independently audited point-in-time constituent and corporate-action database.</li><li>October 20 recovery: 336 missing daily bars use dated final-session Yahoo quote snapshots, checked against each exchange calendar close and rescaled using the prior close. Their exact prices, timestamps and scaling ratios are saved in data/cache/recovered_close_quotes.json. These are closing marks rather than a complete daily-bar corporate-action audit.</li><li>The missing ES3.SI October 20 close of SGD 5.463 is sourced from https://www.eoddata.com/stockquote/SGX/ES3.htm and matches Yahoo previousClose on October 21. This is an observed end-of-day value, not the last intraday bar. Source details are in data/momentum/recovered_close.json.</li></ul><p><a href="comparison.csv">All results CSV</a> · <a href="daily_returns.csv">Daily returns</a> · <a href="excluded_assets.csv">Excluded assets</a> · <a href="run_manifest.json">Source and parameter manifest</a></p></main></body></html>

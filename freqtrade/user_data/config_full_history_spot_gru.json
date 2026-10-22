@@ -1,8 +1,0 @@
-{
-  "freqai": {
-    "identifier": "sequence-gru-spot-native-history-through-2025-v2-seed42",
-    "train_period_days": 2192,
-    "backtest_period_days": 260,
-    "save_backtest_models": false
-  }
-}

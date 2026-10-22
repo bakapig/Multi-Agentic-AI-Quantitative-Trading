@@ -1,0 +1,398 @@
+FE5209 TECHNICAL INVESTOR PITCH
+Meridian ensemble equity research fund
+20 October 2026
+
+MAIN PRESENTATION
+
+Audience: an investment committee evaluating a quantitative research proposal.
+Target delivery: approximately 8-10 minutes; rehearse with the screen changes.
+SAY is the narration. SHOW and TECHNICAL DISPLAY are presentation cues.
+Use actual team names for introductions and final contribution attribution.
+The mandate is illustrative. The demonstrated account is a historical replay.
+
+1 THE INVESTMENT PROPOSITION
+SHOW: Overview, then the architecture diagram.
+
+SAY:
+Good afternoon. We are presenting Meridian, a systematic equity research fund
+that combines multiple trading signals within an independently controlled
+portfolio. Our objective is to improve the consistency of risk-adjusted returns
+relative to a declared equity benchmark, using an allocation process that an
+investor can inspect from signal to approval.
+
+Our research hypothesis is that different price patterns can be useful in
+different conditions. Trend following seeks persistence in an asset's direction.
+Cross-sectional momentum seeks relative strength between assets. Mean reversion
+seeks convergence in a relative-price spread. We express those hypotheses as
+separate engines, then make the capital allocation explicit.
+
+The illustrative mandate is five million US dollars: three million assigned
+to the ensemble and two million in central cash. We are demonstrating the
+investment-decision and control architecture. Our proposal is a staged research
+mandate, with further allocation conditional on reconciled forward performance
+and execution evidence.
+
+2 THE INVESTABLE UNIVERSE AND INFORMATION SET
+SHOW: Ensemble & strategies, with the Historical replay label visible.
+
+SAY:
+The connected fund adapter evaluates fourteen US equities in USD, using SPY
+as its research benchmark and XNYS exchange sessions. Keeping one currency and
+one declared calendar makes the initial integration easier to audit. The wider
+multi-market research universe remains a separate experiment.
+
+Every proposal uses information through its stated signal session. Future rows
+are excluded. Required sessions, positive finite prices, unique timestamps and
+sufficient history are checked before a portfolio can be proposed.
+
+This replay is valued on sixteen October twenty twenty-six, using four hundred
+and forty-nine required exchange sessions. That defines its information set.
+Those controls do not independently verify vendor adjustments, historical
+universe membership, or the absence of survivorship bias.
+
+3 THE THREE RETURN HYPOTHESES
+SHOW: Strategy cards and saved engine target weights.
+
+SAY:
+Our trend engine is long-or-cash. An asset qualifies when its ten-day moving
+average exceeds its sixty-day average, and SPY must pass the same condition.
+The engine equally weights qualifying names. Its hypothesis is directional
+persistence; its vulnerability is repeated reversal around the signal.
+
+Our momentum engine ranks sixty-day returns and rebalances on a ten-session
+schedule. With sector data, eligible sectors receive equal budgets. Within
+each sector, we buy stronger names and short weaker names, scaling positions
+inversely with trailing twenty-session return volatility.
+
+That targets dollar balance within the selected sectors. It does not estimate
+or eliminate market beta. Stock-specific, factor and financing exposures remain.
+
+Our mean-reversion engine uses predefined equity pairs. It subtracts a rolling
+twenty-session mean from the log-price difference and standardises the result.
+The connected policy enters a flat pair at an absolute Z-score of at least two,
+uses a zero-point-two convergence exit band, and applies a three-point-five
+adverse-divergence exit threshold to held positions.
+
+These are candidate pairs. Economic similarity and a rolling Z-score do not
+prove a stationary spread. This engine does not reuse the retired Kalman and
+OU formation tests. Econometric qualification of the current pair set is part
+of the research case before approving a funded mean-reversion allocation.
+
+TECHNICAL DISPLAY:
+  Trend eligibility: MA10(P_i,t) > MA60(P_i,t), with the same SPY filter.
+  Momentum score:   M_i,t = P_i,t / P_i,t-60 - 1.
+  Position scaling within a selected side: w_i,t proportional to 1 / sigma_i,t.
+  Pair spread:      s_AB,t = log(P_A,t) - log(P_B,t).
+  Reversion score:  z_AB,t = (s_AB,t - mean20(s_AB)) / std20(s_AB).
+
+4 CAPITAL ALLOCATION AND THE REGIME ROUTER
+SHOW: Market regime and strategy capital weights.
+
+SAY:
+The regime detector combines recent SPY return, annualised twenty-session
+volatility, and a directional-strength proxy calculated from closing prices.
+It is a transparent threshold classifier, with no calibrated regime probabilities.
+
+Volatility of at least thirty percent takes priority as the crisis state.
+A directional-strength reading of at least twenty-five defines trending
+conditions. Low directional strength and volatility define ranging conditions;
+other observations enter transition.
+
+This snapshot is classified as ranging. Its policy assigns ten percent of the
+ensemble budget to trend, eighty percent to momentum, and ten percent to cash.
+Mean reversion receives zero. Three engines are implemented, while the current
+regime policy funds two. The zero weight is an existing policy setting, not
+evidence that we have established an optimal allocation.
+
+Equal-weight and inverse-volatility alternatives can fund all three engines.
+Inverse volatility uses observed strategy returns through the signal date to
+size the next proposal. It is an allocation heuristic, not a full covariance-
+based equal-risk-contribution optimisation.
+
+We aggregate shared stock symbols before proposing the portfolio. A stock's
+dollar target equals the ensemble budget multiplied by the weighted sum of
+engine targets. Dividing by its price gives the proposed units. Those units
+are intended for a later eligible session, not a fill at the signal close.
+
+TECHNICAL DISPLAY:
+  Dollar target D_i,t = B_t * sum_s(a_s,t * w_s,i,t).
+  Unit target   q_i,t = D_i,t / P_i,t.
+  B_t is capped by confirmed sleeve NAV and its capital mandate.
+  a_s,t is strategy allocation; w_s,i,t is an engine's stock weight.
+  Current a = (trend 0.10, momentum 0.80, reversion 0.00, cash 0.10).
+
+5 THE PROPOSED PORTFOLIO
+SHOW: Overview and approved targets.
+
+SAY:
+The supplied account contains five million dollars of cash and no confirmed
+holdings. The portfolio proposes two point seven million dollars of gross
+exposure, or fifty-four percent of fund NAV. Net exposure is three hundred
+thousand dollars, or six percent of NAV.
+
+Gross measures the absolute size of long and short positions. Net measures
+their signed dollar imbalance. Six percent net is not a beta estimate, and
+fifty-four percent gross is not a volatility forecast.
+
+The distinction between the cash account and proposed positions is deliberate.
+This integration records intentions. It does not turn targets into holdings
+or claim a trade has filled. These are portfolio-construction measurements,
+not investment returns.
+
+TECHNICAL DISPLAY:
+  Gross exposure = sum_i(abs(q_i * P_i)) / NAV = 54%.
+  Net exposure   = sum_i(q_i * P_i) / NAV      = 6%.
+  Connected integration's realised fills      = 0.
+
+6 INDEPENDENT RISK CONTROL
+SHOW: Risk & protection, guardrails, then the Phantom Book.
+
+SAY:
+The investment engines propose; an independent controller decides whether the
+proposal fits the mandate. Under standard policy, gross cannot exceed eighty
+percent of fund NAV, and any symbol cannot exceed twenty percent. Collateral
+and fee reserves can impose tighter constraints first.
+
+At a twelve-percent observed drawdown, the standard gross ceiling falls from
+eighty to forty percent of NAV. At twenty-five percent, the persistent breaker
+requests exits and remains latched across restarts. These are control responses,
+not guarantees that realised losses cannot exceed those thresholds.
+
+Risk applies a common scale to the proposed portfolio, preserving its relative
+proportions within the binding limits. In this snapshot, the largest symbol is
+approximately seven point two percent of NAV, and no reduction is required.
+
+The Phantom Book compares proposed and approved gross exposure. The difference
+here is zero. A positive difference measures exposure removed. Calling it
+profit saved would require a separate counterfactual return calculation.
+
+7 TWO LANES AND THE ROLE OF AI
+SHOW: System flow, then Committee review.
+
+SAY:
+The quantitative lane contains validated prices, strategy targets, allocation,
+independent risk and saved intentions. The advisory lane reviews the evidence
+after risk has decided. Humans own the strategy and risk policy.
+
+The ensemble analyst inspects signals, model health and positions. The Committee
+Chair reviews exposure, the Phantom Book and the analyst memo. Neither role can
+change portfolio weights, override risk or place an order.
+
+Default reviews use deterministic tools. Automatic LLM provider calls are
+pending. Optional imported commentary must refer to the exact facts digest,
+and its structured metric claims are checked against those facts. That does
+not validate every narrative statement.
+
+The investor benefit we are building toward is an explanation tied to the
+investment record. Plausible prose does not become a signal or an approval.
+
+8 EVIDENCE AND THE FE5209 VALIDATION STANDARD
+SHOW: Decision ledger, original JSON and an intention receipt.
+
+SAY:
+Every intention requires the exact stored approval and the same account
+snapshot. Repeated identical proposals do not create duplicate intentions.
+The saved policy, engine hashes and input fingerprints let another reviewer
+inspect the decision basis.
+
+The migration passed twenty-seven targeted software checks and completed
+synthetic and historical cycles. That supports the workflow's behaviour.
+It does not establish statistical significance, alpha or executable performance.
+
+For FE5209, the investment evidence must cover the evaluation window of one to
+twenty-three October twenty twenty-six, with the strategy, benchmark and cost
+conventions disclosed. We must document when policies were fixed and keep
+development and evaluation evidence distinct.
+
+The final performance panel should compare net returns with SPY, equal-weight
+allocation and standalone engines on the same dates. Report drawdown, volatility,
+exposure, turnover and cost sensitivity alongside Sharpe. A short evaluation
+window limits strong annualised conclusions.
+
+The connected fund has no reconciled return history. Our teammate's earlier
+standalone performance table belongs to a different research configuration;
+we do not present it as this fund's achieved result. With zero closed trades,
+trade win rate and profit per trade are unavailable.
+
+9 THE RESEARCH MANDATE AND INVESTMENT GATES
+SHOW: Architecture diagram or Overview.
+
+SAY:
+We propose progressing through explicit gates. First, reconcile simulated fills,
+fees, financing and daily account NAV against a frozen policy. Then complete
+forward paper validation, including turnover, borrow and execution stress.
+Real allocation would follow evidence from that process and a separate
+operational approval.
+
+Meridian gives us a working framework for testing several signals, constraining
+the resulting portfolio and inspecting each decision. The investment objective
+is measurable risk-adjusted performance. Our immediate request is approval for
+the next controlled research stage, with future allocation conditional on results.
+
+
+SIXTY-SECOND VIDEO SCRIPT
+
+Target: 120-140 words. Rehearse the recording to remain within sixty seconds.
+
+We are presenting Meridian, a systematic equity research fund combining trend,
+momentum and mean reversion under an explicit capital-allocation policy.
+
+Our illustrative five-million-dollar mandate assigns three million to the
+ensemble and two million to central cash. Validated equity prices drive the
+signals. Independent risk checks gross exposure, concentration and drawdown
+before recording portfolio intentions.
+
+The dashboard connects each proposal to its inputs, risk approval and review
+evidence. In the sixteen October replay, approved target gross is two point
+seven million dollars. These are proposed exposures, with zero fills.
+
+Advisory tools inspect the evidence after risk decides; automatic LLM calls
+remain pending. We seek a staged research mandate, with further allocation
+conditional on costed forward results, reconciled accounting and execution
+validation.
+
+
+TECHNICAL INVESTOR AND EXAMINER QUESTIONS
+
+1 WHERE DOES YOUR EDGE COME FROM?
+Our hypotheses are directional persistence, cross-sectional relative strength,
+and convergence in selected spreads. The implementation expresses these as
+transparent rules. Edge requires net out-of-sample evidence; architecture alone
+does not establish it.
+
+2 IS THIS REALLY A THREE-STRATEGY PORTFOLIO?
+Three engines are implemented and run for diagnostics. The current regime
+policy gives mean reversion zero in every state. Equal-weight and inverse-
+volatility alternatives can fund it. Describe the active policy accurately.
+
+3 WHY DOES RANGING GIVE MOMENTUM EIGHTY PERCENT?
+That is the teammate's existing fixed allocation map. Do not describe it as an
+econometrically optimal answer. It needs development-sample justification and
+comparison with simple baselines, followed by a frozen evaluation.
+
+4 ARE THE PAIRS COINTEGRATED?
+The connected mean-reversion engine does not test cointegration. Economic
+similarity and a rolling Z-score do not establish a stationary spread. Test
+the intended pair universe on a formation sample before funding that sleeve.
+Account for repeated pair searches and structural breaks in the research.
+
+5 DOES YOUR TREND ENGINE USE ADX AND ATR STOPS?
+The connected vectorized engine uses moving-average and benchmark filters.
+Its ADX and ATR constructor parameters do not implement those controls in the
+current signal path. Do not claim active ADX entry filtering or an ATR trailing
+stop for this engine. The regime router separately uses a close-based
+directional-strength proxy, rather than full high-low-close ADX.
+
+6 IS MOMENTUM MARKET NEUTRAL?
+The sector-data path targets equal long and short dollar budgets within
+eligible sectors, with inverse-volatility sizing on each side. That does not
+guarantee zero market beta or zero factor exposure. Estimate those exposures
+separately from net dollar exposure.
+
+7 IS INVERSE VOLATILITY THE SAME AS RISK PARITY?
+The option is labelled risk_parity in configuration. Its rule normalises inverse
+standalone strategy volatility. It does not solve a full covariance-based
+equal-risk-contribution optimisation.
+
+8 HAVE YOU ELIMINATED LOOK-AHEAD BIAS?
+The adapter truncates future input rows and proposes targets for a later
+session. That is a verified boundary. It does not prove the entire research
+dataset, universe selection, parameter choice or standalone backtest is free
+of leakage. Those need separate, dated validation.
+
+9 WHAT ARE YOUR ACTUAL SHARPE RATIO AND MAXIMUM DRAWDOWN?
+The connected fund has no reconciled return history, so its achieved Sharpe
+and historical maximum drawdown are unavailable. Current snapshot drawdown
+is not backtest maximum drawdown. Use a costed return ledger before presenting
+fund performance figures.
+
+10 HOW ARE COSTS HANDLED?
+Fund risk reserves a fifteen-basis-point fee buffer and a collateral buffer.
+It does not book fees, borrow charges or fills. Standalone research has its
+own assumptions. A reserve is not a realised cost model; investment results
+need consistent execution and financing accounting.
+
+11 DOES THE BREAKER CAP LOSSES AT TWENTY-FIVE PERCENT?
+No. It reacts to observed drawdown by requesting exits and persisting its
+latched state. Gaps, delayed observations and execution failures can cause
+realised losses beyond a threshold.
+
+12 WHAT DOES THE AI ADD TODAY?
+Read-only evidence tools and a boundary for importing commentary linked to
+computed facts. No automatic LLM call or AI-generated trading decision is
+claimed. Faster inspection is the intended advisory benefit, which also needs
+evaluation when a provider is connected.
+
+13 IS YOUR AUDIT LOG TAMPER-PROOF?
+It has transactions, append-only database triggers and content hashes inside
+a trusted local process. This is not external attestation or protection from
+an administrator changing the database and application.
+
+14 WHAT IS NEEDED BEFORE REAL INVESTOR CAPITAL?
+A reconciled account and costed forward return history; executable market data,
+lot and borrow checks; reliable order/fill processing; tested operational
+controls; and separately approved hosting, access and account arrangements.
+The current system supports a research-stage mandate.
+
+
+OPTIONAL RESEARCH ROADMAP SEGMENT - BRUCE TECH DESIGN REFERENCE
+
+SHOW: bruce_inspired_proposal.html, labelled proposed rather than implemented.
+
+SAY:
+We are also considering two architecture extensions inspired by Bruce Tech's
+public description of Manifest MX5. First, a confluence gate would require
+clearly defined signal readings to agree before a new entry. That is a different
+investment rule from our current weighted blend, so it requires its own research.
+
+Second, one engine could operate under separately specified risk mandates.
+Bruce Tech names seven-percent and fifteen-percent drawdown-halt envelopes.
+We include these as attributed design examples. Meridian currently uses twelve
+percent soft and twenty-five percent hard drawdown thresholds. We have not
+implemented those two named profiles or reproduced Bruce Tech's strategy.
+
+The proposed gate and envelopes would execute as numerical code. We must define
+the signal metrics, drawdown basis, soft thresholds, exits and reset rules before
+implementation. A halt requests a control response; it does not guarantee a
+maximum realised loss. Any revised policy needs separate validation.
+
+REFERENCE: https://bruce-tech.com/
+Treat the envelopes as risk profiles. Instruments remain the asset universe.
+
+
+PRESENTER NOTES
+
+Use the same historical cycle across screens. Its valuation date is
+16 October 2026. A report saved later is still that historical replay.
+Open http://127.0.0.1:8765/#overview after starting the local dashboard.
+Keep the current architecture diagram as the main technical visual.
+
+Attribute individual work using actual names. Assign ownership for numerical
+strategy research, data and econometrics, allocation and fund risk, and
+integration and investor reporting. Combine roles explicitly for a four-person
+team. Do not infer component ownership from a merge author alone.
+
+The saved course announcement calls for editable slides, supporting data and
+source code in the final ZIP, with individual contributions identified. The
+optional video is capped at sixty seconds. Final closing prices and out-of-
+sample evidence must match the submitted strategy and dates.
+
+Maintain this distinction: a mandate is a budget, a target is a proposal, an
+intention is a saved record, and a fill changes the account. The connected
+integration currently stops at intention records.
+
+LOCAL SOURCE REFERENCES
+
+ARCHITECTURE.md
+fund_agents/models.py
+fund_agents/ensemble.py
+fund_agents/risk.py
+fund_agents/store.py
+fund_agents/representative.py
+fund_agents/research.py
+multi_strategy_ensemble/trend_strategy.py
+multi_strategy_ensemble/momentum_strategy.py
+multi_strategy_ensemble/reversion_strategy.py
+multi_strategy_ensemble/regime_detector.py
+presentations/roadshow_20261017/course_announcement_summary.txt
+algorithmic_trading_strategy_project_brief_execution_roadmap.md

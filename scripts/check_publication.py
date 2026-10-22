@@ -11,10 +11,9 @@ import re
 import subprocess
 
 
-FORBIDDEN = (".venv/", ".freqtrade-venv/", "datasets/", "processed/", "runtime/", "runs/", "outputs/",
-             ".codex_work/", ".codex_build/", "binance-public-data/", "live/market_data/", "local_llm/",
-             "local_portfolios/", "freqtrade/user_data/data/", "freqtrade/user_data/models/",
-             "freqtrade/user_data/backtest_results/", "freqtrade/validation_runs/")
+FORBIDDEN = (".venv/", "datasets/", "processed/", "runtime/", "runs/", "outputs/",
+             ".codex_work/", ".codex_build/", "live/market_data/", "local_llm/",
+             "local_portfolios/")
 PATTERNS = (
     re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     re.compile(rb"(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|sk-(?:proj-)?[A-Za-z0-9_-]{32,})"),

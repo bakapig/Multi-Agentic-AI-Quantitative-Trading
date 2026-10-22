@@ -6,9 +6,31 @@
 
 ---
 
+## October 1–20 backtest comparison
+
+The [current comparison](../reports/october_2026/research_report.md) reruns the
+existing Backtrader engines and allocation policy against the standalone
+20-asset momentum strategy. It uses all 878 original assets, includes the
+September 30 benchmark close, and corrects Backtrader's commission unit
+conversion. The saved report documents execution assumptions and source recovery.
+The historical performance table below describes a different sample.
+
+## Current fund integration (20 October 2026)
+
+The three engines now expose closing-session target weights to the connected
+[Ensemble PM](../fund_agents/README.md). It replaces the former standalone Pairs
+PM and adds independent risk, portfolio-intention records and advisory review.
+See the [current architecture](../ARCHITECTURE.md).
+
+The regime detector currently gives mean reversion 0% in every state. Equal-weight
+and inverse-volatility comparisons include it. The separate Backtrader research
+runner uses different allocation rules and is not the connected fund execution
+path. The performance table below is retained from the teammate's research and
+has not been revalidated for the fund adapter or the current October config.
+
 ## 1. Overview & Core Philosophy
 
-This module implements a complete, production-ready multi-strategy quantitative architecture that combines **Momentum**, **Trend Following**, and **Mean Reversion** strategies under an adaptive **Market Regime Detection Router**.
+This module implements a multi-strategy quantitative research architecture that combines **Momentum**, **Trend Following**, and **Mean Reversion** strategies under an adaptive **Market Regime Detection Router**.
 
 As emphasized in **Lesson 05 (Classic Strategy Paradigms)** of the manuscript:
 > *"Quantitative trading isn't about inventing new strategies — it's about using the right strategy in the right market. Trending markets need trend strategies; sideways markets need mean reversion strategies. Identifying market state is more important than choosing a strategy."*

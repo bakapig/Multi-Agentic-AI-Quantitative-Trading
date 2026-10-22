@@ -65,6 +65,7 @@ class MomentumStrategy:
         daily_pnl = np.zeros(n_dates)
         daily_friction = np.zeros(n_dates)
         current_weights = pd.Series(0.0, index=assets)
+        target_history = pd.DataFrame(0.0, index=dates, columns=assets)
 
         for t in range(self.lookback_days, n_dates):
             # 1. PnL from previously held positions
@@ -125,11 +126,14 @@ class MomentumStrategy:
             net_ret = gross_ret + cash_yield - tx_cost
             daily_pnl[t] = net_ret
             daily_friction[t] = tx_cost
+            target_history.iloc[t] = current_weights
 
         res_df = pd.DataFrame({
             "daily_return": daily_pnl,
             "daily_friction": daily_friction,
             "cumulative_return": np.cumprod(1.0 + daily_pnl) - 1.0
         }, index=dates)
+
+        res_df.attrs["target_weights"] = target_history
 
         return res_df

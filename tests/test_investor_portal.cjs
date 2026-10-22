@@ -18,8 +18,8 @@ function portal() {
   return {api:context.portalTest,elements,context};
 }
 function cycle() {
-  const group=gross=>({pm:'pairs',group:'V~MA',as_of:'2026-08-28',signal_session:'2026-08-28',actionable:true,hedge_beta:1,legs:[{symbol:'V',units:gross/200,price_usd:100},{symbol:'MA',units:-gross/200,price_usd:100}]});
-  return {schema_version:'pairs-fund-v2',cycle_id:'verified-cycle',as_of:'2026-08-28',mode:'research',generated_at_utc:'2026-10-17T01:00:00Z',status:'INTENTS_RECORDED',execution_mode:'record_only',config:{account_key:'fixture-account',pairs_budget_usd:1500000,momentum_reserve_usd:1500000,central_cash_usd:2000000,maximum_fund_gross:.8,maximum_name_gross:.2,maximum_drawdown:.25,soft_drawdown:.12,soft_drawdown_scale:.5,risk_envelope:'standard'},portfolio_before:{peak_nav_usd:5000000,holdings:[]},portfolio_after:{holdings:[]},fund_risk:{status:'REVIEWED',metrics:{marked_nav_usd:5000000,target_gross_usd:1000000,target_gross_fraction:.2,filled_orders:0},state:{peak_nav_usd:5000000,breaker_latched:false},approved_groups:[group(1000000)],alerts:[],reviews:[],phantom_book:{proposed_gross_usd:1300000,approved_gross_usd:1000000,throttled_gross_usd:300000,soft_throttle_active:false}},pm_proposals:{pairs:{status:'READY',groups:[group(1300000)],diagnostics:{}}},pm_representatives:{},momentum_pm:{status:'NOT_CONNECTED',reserved_cash_usd:1500000},execution_receipts:[],limitations:['No fills.']};
+  const group=gross=>({pm:'ensemble',group:'portfolio',as_of:'2026-10-16',signal_session:'2026-10-16',actionable:true,legs:[{symbol:'V',units:gross/200,price_usd:100},{symbol:'MA',units:-gross/200,price_usd:100}]});
+  return {schema_version:'ensemble-fund-v3',cycle_id:'verified-cycle',as_of:'2026-10-16',mode:'research',generated_at_utc:'2026-10-20T01:00:00Z',status:'INTENTS_RECORDED',execution_mode:'record_only',config:{account_key:'fixture-account',ensemble_budget_usd:3000000,central_cash_usd:2000000,maximum_fund_gross:.8,maximum_name_gross:.2,maximum_drawdown:.25,soft_drawdown:.12,soft_drawdown_scale:.5,risk_envelope:'standard'},portfolio_before:{peak_nav_usd:5000000,holdings:[]},portfolio_after:{holdings:[]},fund_risk:{status:'REVIEWED',metrics:{marked_nav_usd:5000000,target_gross_usd:1000000,target_gross_fraction:.2,filled_orders:0},state:{peak_nav_usd:5000000,breaker_latched:false},approved_groups:[group(1000000)],alerts:[],reviews:[],phantom_book:{proposed_gross_usd:1300000,approved_gross_usd:1000000,throttled_gross_usd:300000,soft_throttle_active:false}},pm_proposals:{ensemble:{status:'READY',groups:[group(1300000)],diagnostics:{regime:'TRENDING_BULL',allocation_method:'regime',allocations:{trend:.5,momentum:.4,mean_reversion:0,cash:.1},engines:{trend:{allocation:.5,target_gross_fraction:1},momentum:{allocation:.4,target_gross_fraction:1},mean_reversion:{allocation:0,target_gross_fraction:.2}}}}},pm_representatives:{},execution_receipts:[],limitations:['No fills.']};
 }
 
 test('legacy reports show missing Chair and Phantom Book instead of invented measurements',()=>{
@@ -50,13 +50,13 @@ test('exported investor brief binds quantities and provenance to the selected cy
 test('saved free text is escaped in overview, committee, flow and audit views',()=>{
   const {api}=portal(),r=cycle(),payload='<img src=x onerror=alert(1)>';
   r.committee_chair={status:'NOT_REQUESTED',computed_memo:{summary:payload},tool_calls:[]};
-  r.pm_proposals.pairs.diagnostics.error=payload;r.fund_risk.alerts=[payload];r.cycle_id=payload;r.limitations=[payload];api.setReport(r);
+  r.pm_proposals.ensemble.diagnostics.error=payload;r.fund_risk.alerts=[payload];r.cycle_id=payload;r.limitations=[payload];api.setReport(r);
   for(const render of [api.overview,api.committeeView,api.flowView,api.auditView]){const html=render();assert.doesNotMatch(html,/<img src=x/);assert.match(html,/&lt;img/);}
 });
-test('linked pair legs retain their signed targets and one group identity',()=>{
-  const {api}=portal(),r=cycle();api.setReport(r);
-  const g={pm:'pairs',group:'V~MA',signal_session:'2026-08-28',hedge_beta:1.5,actionable:true,legs:[{symbol:'V',units:1800,price_usd:100},{symbol:'MA',units:-2700,price_usd:100}]};
-  const html=api.targetTable([g],true);assert.match(html,/\$180,000/);assert.match(html,/-\$270,000/);assert.match(html,/Linked hedge leg/);assert.match(html,/1.5000/);
+test('portfolio basket retains signed targets without an obsolete hedge identity',()=>{
+  const {api}=portal();api.setReport(cycle());
+  const g={pm:'ensemble',group:'portfolio',signal_session:'2026-10-16',actionable:true,legs:[{symbol:'V',units:1800,price_usd:100},{symbol:'MA',units:-2700,price_usd:100}]};
+  const html=api.targetTable([g],true);assert.match(html,/\$180,000/);assert.match(html,/-\$270,000/);assert.match(html,/Portfolio component/);assert.doesNotMatch(html,/hedge|Pairs PM/);
 });
 test('failed report fetch clears stale financial data and permits another cycle selection',async()=>{
   const {api,elements}=portal();api.setReport(cycle());api.setSelected('missing.json');api.setFetch(async()=>({ok:false,status:404}));
@@ -71,21 +71,18 @@ test('only validated imported commentary is displayed with human-review attribut
   r.committee_chair.status='REJECTED';api.setReport(r);assert.doesNotMatch(api.committeeView(),/<p>Imported interpretation/);
 });
 
-test('all active views and exports show only the Pairs mandate and updated cash allocation',()=>{
+test('all active views and exports use the ensemble mandate',()=>{
   const {api}=portal();api.setReport(cycle());
   for(const render of [api.overview,api.pmsView,api.riskView,api.committeeView,api.flowView,api.auditView,api.investorBrief]){
-    assert.doesNotMatch(render(),/crypto|BTCUSDT|two connected/i);
+    assert.doesNotMatch(render(),/Pairs PM|Kalman|OU forecasts|Momentum reserve/i);
   }
-  assert.match(api.overview(),/1\/1 ready/);
-  assert.match(api.overview(),/Central cash/);
-  assert.match(api.overview(),/40\.0%/);
+  for(const name of ['Trend following','Momentum','Mean reversion'])assert.match(api.flowView(),new RegExp(name));
+  assert.match(api.overview(),/60\.0%/);assert.match(api.overview(),/Central cash/);
+  assert.match(api.pmsView(),/STANDBY/);assert.match(api.pmsView(),/0% to mean reversion/);
 });
-
-test('Pairs evidence displays source revision and its effective holding policy',()=>{
-  const {api}=portal(),r=cycle();r.config.max_holding_sessions=45;
-  r.pm_proposals.pairs.diagnostics={strategy:{engine_files_verified:true,repository:'javascript:alert(1)',commit:'5d42b0463f5d',verified_on:'2026-10-17',policy:{holding_half_life_multiplier:2.5,max_holding_sessions:45}},pairs:[{pair:'V~MA',held_sessions:2,holding_limit_sessions:8,forecasts:[]}]};
-  api.setReport(r);const html=api.pmsView();
-  assert.match(html,/Pinned 5d42b0463f5d/);assert.match(html,/2 \/ 8/);
-  assert.match(html,/opening-session OU half-life × 2\.50/);
-  assert.doesNotMatch(html,/href="javascript:/);
+test('successful cycle loading displays fresh ensemble evidence',async()=>{
+  const {api,elements}=portal();api.setSelected('test.json');api.setFetch(async()=>({ok:true,json:async()=>cycle()}));
+  await api.loadSelected();assert.equal(elements.get('#brief-export').disabled,false);
+  assert.match(elements.get('#content').innerHTML,/Ensemble PM/);
+  assert.equal(elements.get('#cycle-select').disabled,false);
 });

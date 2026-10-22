@@ -1,0 +1,73 @@
+{
+  "requested_window": [
+    "2026-10-01",
+    "2026-10-20"
+  ],
+  "requested_xnys_sessions": 14,
+  "full_original_window": [
+    "2026-10-01",
+    "2026-10-20"
+  ],
+  "full_original_assets": 878,
+  "full_original_oct20_result_available": true,
+  "verified_subset_assets": 878,
+  "excluded_asset_count": 0,
+  "new_momentum_assets": [
+    "SPY",
+    "QQQ",
+    "TLT",
+    "GLD",
+    "USO",
+    "ES3.SI",
+    "D05.SI",
+    "O39.SI",
+    "U11.SI",
+    "EFA",
+    "EEM",
+    "EWJ",
+    "IEF",
+    "LQD",
+    "HYG",
+    "DBC",
+    "DBA",
+    "CPER",
+    "UUP",
+    "FXY"
+  ],
+  "initial_research_capital": 1000000.0,
+  "source_sha256": {
+    "data/cache/asset_prices.csv": "4e6a49d89b0209a93fa8aa4857c158486d18dfd3fea32cc93da7c87510a2bde0",
+    "data/cache/benchmark_SPY.csv": "9fd75fafd4a21327d72e35c0d31a808fa5a2b8d96034fa6f44c346b59318cebe",
+    "data/momentum/prices.csv": "50575365b16c775d90baaa8e9c38fe74e1ca5c6dfad9182c31c833bea6f2d083",
+    "data/momentum/garch_vol_forecasts.csv": "870ae6f5b11f15d096e4339ad7192565a727d1986b5d559768daf3be35aac2a3",
+    "data/momentum/rf_irx.csv": "8176efa0c11b57149d6bfb348ada9da3f069d9e24f44b3f3f3e381090fe330ee",
+    "data/cache/recovered_close_quotes.json": "b0236c5ea4350bd3ff930801aa8186d19521f20d4fb1ff75f8e369a04b009b9e",
+    "data/momentum/recovered_close.json": "a28f874805bd1e3ca7284f8d3c6300ae8e639b5f89fa35445e27f4331d3da437"
+  },
+  "implementation_sha256": {
+    "momentum/config.py": "4f9f49c0bfba95b543c93e144197bb7921088a73279359cb40e4668d055c24dd",
+    "momentum/strategy.py": "1e61b1493a50d36f58e9cf28c23180e352da0c61ba40ae9447a9a16e71e328a8",
+    "multi_strategy_ensemble/config.py": "093b02403cd28131f1abb374e8dfd7a08c30e1bd01797b43de767e069dab5cbc",
+    "multi_strategy_ensemble/backtrader_ensemble.py": "aa8a1b97519d701f84a7ea1c236751eb3bb40081e89caaef701e5b7edb046451",
+    "multi_strategy_ensemble/regime_detector.py": "19f16214b5433b4d1f1ddb1e75dc6a33202439476c5a4c7a3aaa2a00a8e8ec5e",
+    "common/microstructure.py": "607bdf0d6fc58d944b783ebcb4a642123df80229bd382400c4b62be5a6fbc301",
+    "scripts/compare_october_strategies.py": "ffcef6d763667e1da896b8f0772c6ecf5af2af57a651c0a6322faf8edd0b26fc"
+  },
+  "upstream_reference": "89b51d6",
+  "notes": [
+    "Research simulations only; the fund adapter still records intentions with zero confirmed fills.",
+    "Original ensemble: existing Backtrader strategies and regime allocations, 120 warm-up bars, starts in cash on October 1. Ensemble NAVs blend standalone sleeve returns; no separate allocator turnover fee is modeled.",
+    "Original execution: existing same-close (cheat-on-close) assumption, synthetic high/low at close +/-0.5%, 2 bp slippage, market-specific fees, board lots and short borrow. This is optimistic compared with a tradable next-session simulation.",
+    "Backtrader decimal commission units corrected with percabs=True; the previous fee conversion charged 1/100 of the intended rate. Return accounting includes the starting capital and September 30 benchmark close; inverse-vol weights use prior observations.",
+    "Original 60-day sleeve risk-parity estimator has fewer than 60 trading observations here; its existing 0.01 fallback gives equal sleeve weights throughout the short test.",
+    "New momentum: fixed 50% time-series trend / 50% long-only inverse-volatility core, existing GARCH-t forecasts, 10% target annual volatility, 3x gross cap, lag=2, trading costs and rf+50bp financing above 1x gross. Carries pre-October model positions into the test.",
+    "Removing one holding changes the momentum portfolio. No remaining signal, volatility, trading-band or cost parameters were tuned on October results.",
+    "Momentum weights are continuous research weights without board-lot rounding. Both research engines mix local-currency asset returns without an FX conversion model; normalized results are not fully reconciled USD account returns.",
+    "Own-market holidays are carried forward in momentum; open-market missing quotes are rejected. The ensemble verified subset has observed closes on every SPY session; excluded assets are listed separately.",
+    "Annualized Sharpe and volatility use only 13 or 14 observations and are descriptive, not evidence of persistent performance. SPY excludes benchmark transaction costs.",
+    "Historical caches and pretrained forecasts are supplied research inputs, not an independently audited point-in-time constituent and corporate-action database.",
+    "October 20 recovery: 336 missing daily bars use dated final-session Yahoo quote snapshots, checked against each exchange calendar close and rescaled using the prior close. Their exact prices, timestamps and scaling ratios are saved in data/cache/recovered_close_quotes.json. These are closing marks rather than a complete daily-bar corporate-action audit.",
+    "The missing ES3.SI October 20 close of SGD 5.463 is sourced from https://www.eoddata.com/stockquote/SGX/ES3.htm and matches Yahoo previousClose on October 21. This is an observed end-of-day value, not the last intraday bar. Source details are in data/momentum/recovered_close.json."
+  ],
+  "orders_enabled": false
+}

@@ -14,11 +14,11 @@ from fund_agents.dashboard import DashboardHandler, reports_in
 
 
 def envelope(cycle="test", generated="2026-10-14T10:00:00+00:00"):
-    return {"schema_version": "pairs-fund-v2", "cycle_id": cycle,
+    return {"schema_version": "ensemble-fund-v3", "cycle_id": cycle,
             "as_of": "2026-08-28", "generated_at_utc": generated,
             "mode": "research", "status": "INPUT_HOLD", "config": {},
             "fund_risk": {"status": "INPUT_HOLD", "metrics": {}, "approved_groups": []},
-            "pm_proposals": {"pairs": {"status": "INPUT_HOLD"}}, "portfolio_before": {}}
+            "pm_proposals": {"ensemble": {"status": "INPUT_HOLD"}}, "portfolio_before": {}}
 
 
 class QuietHandler(DashboardHandler):
@@ -41,9 +41,9 @@ class FundDashboardTests(unittest.TestCase):
 
     def test_index_excludes_audits_and_preserves_held_metrics(self):
         self.write("research/held.json", envelope())
-        self.write("held.crypto_quality.json", envelope("not-a-cycle"))
+        self.write("held.quality.json", envelope("not-a-cycle"))
         self.write("unrelated.json", {"private": "not a report"})
-        self.write("legacy.json", dict(envelope("legacy"), schema_version="two-pm-fund-v1"))
+        self.write("legacy.json", dict(envelope("legacy"), schema_version="pairs-fund-v2"))
         reports, warnings = reports_in(self.root)
         self.assertEqual([r[0] for r in reports], ["research/held.json"])
         self.assertEqual(reports[0][1]["fund_risk"]["metrics"], {})
@@ -52,7 +52,7 @@ class FundDashboardTests(unittest.TestCase):
     def test_newest_saved_cycle_first_and_invalid_reports_are_skipped(self):
         self.write("older.json", envelope("older"))
         self.write("newer.json", envelope("newer", "2026-10-15T10:00:00+00:00"))
-        self.write("incomplete.json", {"schema_version": "pairs-fund-v2"})
+        self.write("incomplete.json", {"schema_version": "ensemble-fund-v3"})
         (self.root / "partial.json").write_text('{"schema_version":', encoding="utf-8")
         self.write("nonfinite.json", dict(envelope(), config={"limit": float("nan")}))
         (self.root / "overflow.json").write_text(json.dumps(envelope()).replace('"config": {}', '"config": {"limit": 1e999}'), encoding="utf-8")
@@ -66,7 +66,7 @@ class FundDashboardTests(unittest.TestCase):
 
     def test_active_schema_cannot_include_the_retired_pm(self):
         invalid = envelope()
-        invalid["pm_proposals"]["crypto"] = {"status": "READY"}
+        invalid["pm_proposals"]["pairs"] = {"status": "READY"}
         self.write("mixed.json", invalid)
         reports, warnings = reports_in(self.root)
         self.assertEqual(reports, [])

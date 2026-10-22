@@ -75,7 +75,7 @@ class FundStore:
                 continue
             intent = {"account_key": decision["account_key"], "as_of": snapshot.as_of,
                       "pm": group["pm"], "group": group["group"], "legs": legs,
-                      "hedge_beta": group["hedge_beta"], "execution_condition": "LINKED_GROUP_RECORD_ONLY",
+                      "execution_condition": "PORTFOLIO_BASKET_RECORD_ONLY",
                       "timing": "After completed signal session; a future fill adapter must use the next eligible session"}
             intent_id = fingerprint(intent)
             existing = self.connection.execute("SELECT payload FROM fund_intents WHERE intent_id=?", (intent_id,)).fetchone()

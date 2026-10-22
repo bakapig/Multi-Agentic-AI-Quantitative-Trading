@@ -1,0 +1,283 @@
+ENSEMBLE SYSTEM BUILD AND WEB APP WALKTHROUGH
+20 October 2026
+
+Use this as a developer explanation and a spoken web-app demonstration.
+RUN means a PowerShell command. SHOW identifies the file or screen to open.
+SAY is text you can read aloud. The app displays saved research decisions.
+
+PART 1 - START THE SYSTEM
+
+These commands use the current local working copy, including the ensemble
+integration changes. Those changes have not been committed or pushed yet.
+
+RUN from PowerShell:
+
+Set-Location -LiteralPath "C:\Users\user\OneDrive\Personal Work Repos\Crypto Trading Strategy Research"
+
+If the environment does not exist, create it once:
+
+py -3 -m venv .venv
+
+For the first setup, install the fund requirements and launch the invented-price demo:
+
+.\scripts\start_ensemble_web_app.ps1 -InstallDependencies
+
+For the historical replay used in this walkthrough:
+
+.\scripts\start_ensemble_web_app.ps1 -Mode research
+
+Open http://127.0.0.1:8765/#overview. Keep the terminal open; Ctrl+C stops the
+dashboard. If another app occupies that port, add -Port 8766 and open that port.
+The app is already running on 8765 during this walkthrough, so these commands
+are for restarting it later or using a separate port.
+
+The launcher generates a saved cycle, checks its exit status, then starts the
+read-only dashboard. It uses cached prices for research, with no market download.
+It does not execute orders or invoke an LLM provider.
+
+Equivalent commands without the launcher:
+
+.\.venv\Scripts\python.exe -m pip install -r requirements-fund.txt
+.\.venv\Scripts\python.exe -m fund_agents
+.\.venv\Scripts\python.exe -m fund_agents.dashboard
+
+To generate the historical cycle directly, run this as one line:
+
+.\.venv\Scripts\python.exe -m fund_agents --config config/fund_agents.research.json --as-of 2026-10-16 --prices data/cache/asset_prices.csv --benchmark-prices data/cache/benchmark_SPY.csv --sectors data/cache/full_universe_sectors.csv
+
+Then refresh the app and select Historical replays. Its valuation date is
+16 October 2026; saving the report on 20 October does not make it a live feed.
+
+
+PART 2 - EXPLAIN HOW TO BUILD IT
+
+1 DEFINE THE ACCOUNT AND POLICY
+SHOW: fund_agents/models.py and config/fund_agents.research.json
+
+SAY:
+I start by defining the account and the rules every module must follow. The
+illustrative fund has five million dollars: three million assigned to the
+Ensemble PM and two million in central cash. Typed records describe confirmed
+holdings, proposed portfolio targets, and the valuation date.
+
+The policy also defines the stock universe, allocation method and risk limits.
+The current connected adapter uses fourteen US equities, USD prices, and the
+US exchange-session calendar. Configuration is separate from strategy code so
+we can see exactly which policy produced each saved decision.
+
+2 BUILD THE INPUT GATE
+SHOW: fund_agents/__main__.py and fund_agents/ensemble.py
+
+SAY:
+Next I load equity closes and the SPY benchmark from CSV files. I fingerprint
+the inputs, exclude future rows, and check all required exchange sessions.
+Duplicate dates, missing sessions, and invalid prices hold the cycle. I do not
+fill a missing price to make the model continue.
+
+The historical example keeps 449 required exchange sessions and excludes
+14 rows when the declared US exchange was closed. The numbers come from this
+saved replay. A synthetic demo has a different input basis and is labelled
+separately. Neither mode supplies an automatic current market feed.
+
+3 IMPLEMENT THREE STRATEGY ENGINES
+SHOW: multi_strategy_ensemble/trend_strategy.py, momentum_strategy.py,
+      reversion_strategy.py
+
+SAY:
+The trend engine compares ten-day and sixty-day moving averages and checks
+the broader market trend. Momentum ranks sixty-day performance and sizes
+positions using volatility; its sector-neutral mode is enabled when we provide
+sector data. The mean-reversion engine watches rolling spread Z-scores across
+predefined equity pairs.
+
+Each engine exposes target weights as of the completed signal close. These
+targets describe a desired portfolio for a later eligible session. Running the
+numerical engine does not establish that the account owns those positions.
+The former standalone Kalman and OU Pairs PM has been removed.
+
+4 ADD THE ENSEMBLE AND REGIME ROUTER
+SHOW: multi_strategy_ensemble/regime_detector.py and fund_agents/ensemble.py
+
+SAY:
+The regime detector measures benchmark trend strength, recent return and
+volatility. The Ensemble PM combines the three engines using one selected
+policy: regime allocation, equal weights, or inverse strategy volatility.
+It aggregates shared stock symbols before proposing one portfolio basket.
+
+For this historical replay the market state is ranging. The policy allocates
+ten percent to trend, eighty percent to momentum, zero percent to mean reversion,
+and ten percent to cash. These percentages apply within the three-million-dollar
+ensemble budget. Mean reversion still runs for diagnostics. The current regime
+policy gives it zero in every state; the other allocation policies can fund it.
+
+5 ADD INDEPENDENT FUND RISK
+SHOW: fund_agents/risk.py
+
+SAY:
+The strategy proposes; independent fund risk reviews. Risk checks the supplied
+account value, total gross exposure, symbol concentration, collateral and fee
+reserves. The standard fund gross limit is eighty percent of NAV, and the
+symbol limit is twenty percent.
+
+A twelve-percent drawdown activates a lower gross cap. A twenty-five-percent
+drawdown latches the hard breaker across restarts. Risk can scale the proposed
+portfolio or request exits. Those decisions still need an execution process
+before they can become filled trades. The Phantom Book measures the exposure
+removed between the proposal and approval.
+
+6 RECORD THE DECISION ATOMICALLY
+SHOW: fund_agents/coordinator.py and fund_agents/store.py
+
+SAY:
+The coordinator runs these modules in order inside a database transaction.
+It saves risk approval before recording an intention. The store requires the
+exact saved approval and the same confirmed account snapshot. A changed target
+cannot reuse an earlier approval.
+
+SQLite stores the cycle, risk state, and intention records. A JSON export feeds
+the dashboard. Repeating the same intention returns an already-recorded status,
+which prevents a replay from pretending to create another trade. Confirmed
+cash and holdings do not change, and every execution receipt has zero fills.
+
+7 ADD THE ADVISORY LANE
+SHOW: fund_agents/representative.py and fund_agents/research.py
+
+SAY:
+After risk decides, the Ensemble evidence analyst inspects signals, model health
+and proposed positions. The Committee Chair reviews exposure, the Phantom Book
+and the analyst's evidence. Both roles have read-only tools.
+
+The current default review is computed by code. Automatic LLM provider calls
+are not connected. An optional imported model reply must refer to the exact
+facts digest, and its structured metric claims must match the supplied facts.
+Those checks do not validate every sentence of a narrative. Commentary never
+changes targets, risk approvals or intention records.
+
+8 BUILD THE WEB APP
+SHOW: fund_agents/dashboard.py and fund_agents/web/
+
+SAY:
+The web server is a small Python HTTP service. It serves plain HTML, CSS and
+JavaScript and exposes two read-only endpoints for the saved report index and
+an individual report. No React or Node build is required to run this app.
+
+Every screen is bound to one selected saved cycle. The UI shows its valuation
+date, input basis, account snapshot, strategy weights and approval trail.
+Refreshing the page reads reports; it does not rerun strategies. The active
+portal accepts the ensemble report schema and excludes retired PM reports.
+
+9 VERIFY THE BOUNDARIES
+SHOW: tests/test_fund_agents.py, tests/test_fund_dashboard.py,
+      tests/test_investor_portal.cjs
+
+SAY:
+The migration checks cover all three allocation policies, future-data exclusion,
+missing-data holds, risk scaling, the persistent breaker, exact approvals,
+repeated intentions, old-account rejection, and the advisory boundary. Dashboard
+checks cover report access, missing measurements, escaping and cycle loading.
+
+The ensemble migration has seventeen Python checks and ten JavaScript checks.
+The recorded validation passed all twenty-seven. Demo and historical cycles
+also completed. This establishes the workflow; it does not establish future
+trading performance.
+
+RUN these checks when validating further implementation changes:
+
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p test_fund_agents.py
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p test_fund_dashboard.py
+node --test tests/test_investor_portal.cjs
+
+Node is needed for that optional JavaScript test command, not to serve the app.
+
+
+PART 3 - GIVE THE SIX-SCREEN WEB APP TOUR
+
+Keep the same historical cycle selected throughout this demonstration.
+These screen examples refer to the replay valued on 16 October 2026.
+
+SCREEN 1 - OVERVIEW
+SHOW: Overview, with the historical-replay label and valuation date visible.
+
+SAY:
+This is the fund's saved decision snapshot. The marked account value is five
+million dollars, from the supplied cash-only account. Approved target gross is
+two point seven million dollars, or fifty-four percent of NAV. Those are proposed
+holdings, so they do not reduce the displayed confirmed cash. One portfolio
+intention is recorded, with zero fills.
+
+SCREEN 2 - ENSEMBLE AND STRATEGIES
+SHOW: Ensemble & strategies in the left navigation.
+
+SAY:
+One Ensemble PM combines three engines: trend following, momentum and mean
+reversion. This replay is classified as ranging. Its allocations are ten,
+eighty and zero percent, with ten percent in strategy cash. Mean reversion is
+standby under this policy. Expand the proposal to inspect the engine weights,
+input checks and the exact portfolio targets.
+
+SCREEN 3 - RISK AND PROTECTION
+SHOW: Risk & protection, then the Phantom Book and approved targets.
+
+SAY:
+Risk approved two point seven million dollars of gross exposure against an
+eighty-percent fund cap. The largest symbol uses about seven point two percent
+of NAV, below its twenty-percent limit. This snapshot has zero measured drawdown.
+The Phantom Book shows zero exposure removed in this cycle. That zero is a
+comparison of targets, not profit, savings or evidence that trading has occurred.
+
+SCREEN 4 - COMMITTEE REVIEW
+SHOW: Committee review, diagnostic tools and the model-reply status.
+
+SAY:
+Here we inspect what the evidence analyst and Committee Chair reviewed after
+risk. Expand the tools to inspect their saved facts. The status NOT_REQUESTED
+means no model reply was imported. The computed summary is generated by code.
+If we import a model response later, its metric claims must match this cycle's
+facts, and its narrative still requires human review.
+
+SCREEN 5 - SYSTEM FLOW
+SHOW: System flow. Select Ensemble PM, risk and the advisory components.
+
+SAY:
+Lane one computes the investment proposal, applies independent risk and records
+the result. Lane two reads the evidence and explains that result. The human
+team owns the strategy and risk policy. Selecting a component reveals the actual
+record attached to this cycle. The review lane cannot change the portfolio.
+
+SCREEN 6 - DECISION LEDGER
+SHOW: Decision ledger. Inspect the intention receipt and export controls.
+
+SAY:
+The ledger ties the account snapshot to its risk approval and intended position
+changes. It may say ALREADY_RECORDED_NOT_EXECUTED because the same intention was
+generated in a previous replay. That is the duplicate protection working.
+The original JSON and investor brief let another reviewer inspect the same
+saved evidence. This cycle still contains zero fills and no realised fund P&L.
+
+
+PART 4 - SIXTY-SECOND SPOKEN VERSION
+
+SAY:
+We built a quantitative research fund around one Ensemble PM with three engines:
+trend following, momentum and mean reversion. Validated equity prices feed the
+engines. A market-regime policy combines their targets, and independent fund
+risk checks capital, exposure and drawdown before saving an approval.
+
+The second lane reviews the evidence after that decision. An analyst and a
+Committee Chair can explain the saved result, with no trading authority.
+Automatic LLM calls are still pending.
+
+The web app connects the strategy weights, risk verdict and decision ledger to
+one historical snapshot. In this replay, five million dollars of supplied capital
+supports two point seven million dollars of approved target gross. The prototype
+records intentions with zero fills. The next implementation stage is executable
+quotes, borrow and lot checks, fills, and reconciled accounting.
+
+
+REFERENCE FILES
+
+Architecture: ARCHITECTURE.md
+Fund commands and account schema: fund_agents/README.md
+Launcher: scripts/start_ensemble_web_app.ps1
+Diagram: presentations/architecture_20261020/ensemble_architecture.html
+Numerical research: multi_strategy_ensemble/

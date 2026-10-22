@@ -418,14 +418,14 @@ def compute_bt_metrics(daily_equity: pd.Series, initial_capital: float, rf_annua
     tot_ret = float((clean_eq.iloc[-1] - initial_capital) / initial_capital)
     ann_ret = float((1.0 + tot_ret) ** (252.0 / n) - 1.0)
 
-    daily_ret = clean_eq.pct_change().dropna()
+    daily_ret = clean_eq / clean_eq.shift(1).fillna(initial_capital) - 1.0
     ann_vol = float(daily_ret.std() * np.sqrt(252.0))
 
     rf_daily = (1.0 + rf_annual) ** (1.0 / 252.0) - 1.0
     excess_ret = daily_ret - rf_daily
     sharpe = float(np.sqrt(252.0) * excess_ret.mean() / (daily_ret.std() + 1e-8))
 
-    peaks = clean_eq.cummax()
+    peaks = clean_eq.cummax().clip(lower=initial_capital)
     drawdown = (clean_eq - peaks) / peaks
     max_dd = float(drawdown.min())
     calmar = float(ann_ret / abs(max_dd)) if abs(max_dd) > 1e-4 else 0.0
@@ -481,6 +481,15 @@ def run_backtrader_multi_strategy_suite(
     oos_idx = common_idx[(common_idx >= pd.to_datetime(start_date)) & (common_idx <= pd.to_datetime(end_date))]
     if len(oos_idx) < min_test_bars:
         raise ValueError(f"Insufficient out-of-sample bars ({len(oos_idx)}) between {start_date} and {end_date}.")
+    test_values = universe_prices.loc[oos_idx].to_numpy(dtype=float)
+    if not np.isfinite(test_values).all() or (test_values <= 0).any():
+        raise ValueError("Missing or invalid observed test quotes; use the comparison runner to report incomplete coverage and an explicit subset.")
+
+    # Prepend warm-up history (indicator formation only)
+    pre_idx = common_idx[common_idx < pd.to_datetime(start_date)]
+    warm_idx = pre_idx[-warmup_bars:] if warmup_bars > 0 else pre_idx[:0]
+    feed_idx = warm_idx.append(oos_idx)
+    trade_start = pd.to_datetime(start_date).date() if warmup_bars > 0 else None
 
     # Prepend warm-up history (indicator formation only)
     pre_idx = common_idx[common_idx < pd.to_datetime(start_date)]
@@ -602,18 +611,18 @@ def run_backtrader_multi_strategy_suite(
     }).dropna().ffill()
     eq_matrix.index = pd.to_datetime(eq_matrix.index)
 
-    r_trend = eq_matrix["Trend"].pct_change().fillna(0.0)
-    r_mom = eq_matrix["Momentum"].pct_change().fillna(0.0)
-    r_mr = eq_matrix["Mean_Reversion"].pct_change().fillna(0.0)
+    r_trend = eq_matrix["Trend"] / eq_matrix["Trend"].shift(1).fillna(initial_capital) - 1
+    r_mom = eq_matrix["Momentum"] / eq_matrix["Momentum"].shift(1).fillna(initial_capital) - 1
+    r_mr = eq_matrix["Mean_Reversion"] / eq_matrix["Mean_Reversion"].shift(1).fillna(initial_capital) - 1
 
     # 1. Equal Weight 1/3
     r_eq = (r_trend + r_mom + r_mr) / 3.0
     eq_equal_weight = initial_capital * (1.0 + r_eq).cumprod()
 
     # 2. Risk Parity (Inverse 60-day Volatility)
-    v_tr = r_trend.rolling(60).std().fillna(0.01)
-    v_mo = r_mom.rolling(60).std().fillna(0.01)
-    v_re = r_mr.rolling(60).std().fillna(0.01)
+    v_tr = r_trend.rolling(60).std().shift(1).clip(lower=1e-6).fillna(0.01)
+    v_mo = r_mom.rolling(60).std().shift(1).clip(lower=1e-6).fillna(0.01)
+    v_re = r_mr.rolling(60).std().shift(1).clip(lower=1e-6).fillna(0.01)
 
     inv_sum = (1.0 / v_tr) + (1.0 / v_mo) + (1.0 / v_re)
     w_tr = (1.0 / v_tr) / inv_sum
@@ -644,7 +653,7 @@ def run_backtrader_multi_strategy_suite(
     eq_regime = initial_capital * (1.0 + r_regime).cumprod()
 
     # Benchmark (SPY)
-    bench_rets = bench_oos.loc[eq_matrix.index].pct_change().fillna(0.0)
+    bench_rets = bench_oos.pct_change().loc[eq_matrix.index]
     eq_benchmark = initial_capital * (1.0 + bench_rets).cumprod()
 
     # Metrics Summary
