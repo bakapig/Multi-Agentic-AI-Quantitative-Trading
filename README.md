@@ -30,6 +30,9 @@ Its six-step tour and investor brief use one selected saved cycle. New
 - [Momentum strategy (trend + risk-parity core, GARCH-t volatility targeting, SGX assets included)](momentum/README.md):
   separate paper strategy with its own daily update (`scripts/run_momentum_daily.py`) and outputs in `live/momentum/` and
   `reports/momentum/`. It is not connected to `fund_agents` and does not use the fund risk limits.
+- [NDX momentum-hedge strategy (top-5 momentum stocks + PSQ hedge, point-in-time universe)](ndx_momentum/README.md):
+  separate paper strategy with its own daily update (`scripts/run_ndx_momentum_daily.py`) and outputs in `live/ndx_momentum/` and
+  `reports/ndx_momentum/`. It is not connected to `fund_agents`.
 
 The teammate remote checked on 17 October remains at `5d42b04`; the numerical
 engines were already vendored. The current integration adds source verification,

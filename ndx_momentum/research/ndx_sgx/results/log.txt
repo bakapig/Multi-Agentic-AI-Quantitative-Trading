@@ -1,0 +1,88 @@
+$ATVI: possibly delisted; no timezone found
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ANSS"}}}
+$ALXN: possibly delisted; no timezone found
+$ANSS: possibly delisted; no timezone found
+
+3 Failed downloads:
+['ATVI', 'ALXN', 'ANSS']: possibly delisted; no timezone found
+$ESRX: possibly delisted; no timezone found
+$CERN: possibly delisted; no timezone found
+$CELG: possibly delisted; no timezone found
+$ENDP: possibly delisted; no timezone found
+$DISCA: possibly delisted; no timezone found
+$DISH: possibly delisted; no timezone found
+$CA: possibly delisted; no timezone found
+$CTXS: possibly delisted; no timezone found
+
+8 Failed downloads:
+['ESRX', 'CERN', 'CELG', 'ENDP', 'DISCA', 'DISH', 'CA', 'CTXS']: possibly delisted; no timezone found
+$LMCA: possibly delisted; no timezone found
+$FI: possibly delisted; no timezone found
+$HOLX: possibly delisted; no timezone found
+$LMCK: possibly delisted; no timezone found
+$KFT: possibly delisted; no timezone found
+$LLTC: possibly delisted; no timezone found
+
+6 Failed downloads:
+['LMCA', 'FI', 'HOLX', 'LMCK', 'KFT', 'LLTC']: possibly delisted; no timezone found
+$NLOK: possibly delisted; no timezone found
+$MYL: possibly delisted; no timezone found
+$MXIM: possibly delisted; no timezone found
+
+3 Failed downloads:
+['NLOK', 'MYL', 'MXIM']: possibly delisted; no timezone found
+$SHPG: possibly delisted; no timezone found
+$QRTEA: possibly delisted; no timezone found
+$SRCL: possibly delisted; no timezone found
+$SPLK: possibly delisted; no timezone found
+$SGEN: possibly delisted; no timezone found
+
+5 Failed downloads:
+['SHPG', 'QRTEA', 'SRCL', 'SPLK', 'SGEN']: possibly delisted; no timezone found
+$WFM: possibly delisted; no timezone found
+$VIAB: possibly delisted; no timezone found
+$WBA: possibly delisted; no timezone found
+$YHOO: possibly delisted; no timezone found
+$XLNX: possibly delisted; no timezone found
+
+5 Failed downloads:
+['WFM', 'VIAB', 'WBA', 'YHOO', 'XLNX']: possibly delisted; no timezone found
+prices: (2942, 228); NDX current with data 100/100; PIT tickers with data 197/197; STI with data 29/29
+calendar 2015-06-01 2026-10-20
+
+=== 2017-06..2026-10: excess return over cash (stock sleeve 50% minus index hedge), lag 2, costs ===
+                                   rule  net_ann_excess  net_vol  net_sharpe  net_mdd  net_wk_turnover  gross_ann_excess  gross_t  share_sgx_picks
+                            NDX current           0.020    0.073       0.307   -0.116            0.297             0.036    1.572            0.000
+                      NDX point-in-time          -0.020    0.059      -0.317   -0.195            0.298            -0.005   -0.224            0.000
+                 SGX only (STI current)          -0.039    0.036      -1.101   -0.335            0.298            -0.002   -0.142            1.000
+            Pooled NDX+SGX, raw 5d rank          -0.018    0.076      -0.201   -0.226            0.500             0.025    1.135            0.468
+          Pooled NDX+SGX, vol-norm rank          -0.044    0.060      -0.718   -0.380            0.511            -0.000    0.072            0.491
+Two sleeves 50/50 (NDX top5 + SGX top5)          -0.009    0.040      -0.211   -0.123            0.297             0.018    1.328            0.537
+
+=== 2021-01..2026-10: excess return over cash (stock sleeve 50% minus index hedge), lag 2, costs ===
+                                   rule  net_ann_excess  net_vol  net_sharpe  net_mdd  net_wk_turnover  gross_ann_excess  gross_t  share_sgx_picks
+                            NDX current           0.019    0.081       0.270   -0.116            0.285             0.034    1.111            0.000
+                      NDX point-in-time          -0.007    0.064      -0.073   -0.188            0.289             0.008    0.460            0.000
+                 SGX only (STI current)          -0.042    0.036      -1.164   -0.231            0.292            -0.006   -0.347            1.000
+            Pooled NDX+SGX, raw 5d rank          -0.021    0.083      -0.219   -0.183            0.489             0.021    0.706            0.468
+          Pooled NDX+SGX, vol-norm rank          -0.046    0.063      -0.717   -0.277            0.498            -0.004   -0.075            0.491
+Two sleeves 50/50 (NDX top5 + SGX top5)          -0.011    0.044      -0.234   -0.107            0.288             0.015    0.843            0.537
+
+=== Placebo: does ranking by 5d momentum add anything beyond the universe? (gross excess per year, 2017-06 on, no costs) ===
+              universe  rebalances  strategy_gross  all_positive20d_names  random5_mean  random5_p95  p_value_rank_skill
+           NDX current         490           0.036                  0.015         0.015        0.038               0.072
+     NDX point-in-time         490          -0.005                 -0.007        -0.007        0.013               0.425
+SGX only (STI current)         490          -0.003                  0.000         0.000        0.011               0.684
+
+Net excess return by year
+       NDX current  NDX point-in-time  SGX only (STI current)  Pooled NDX+SGX, raw 5d rank  Pooled NDX+SGX, vol-norm rank  Two sleeves 50/50 (NDX top5 + SGX top5)
+2017       -0.029             -0.021                  -0.006                       -0.025                         -0.033                                   -0.018
+2018        0.041             -0.022                  -0.028                       -0.006                          0.002                                    0.006
+2019        0.029             -0.047                  -0.079                       -0.019                         -0.044                                   -0.026
+2020        0.043             -0.066                  -0.015                        0.005                         -0.072                                    0.015
+2021       -0.033              0.016                  -0.073                       -0.097                         -0.109                                   -0.052
+2022        0.011              0.060                  -0.034                       -0.045                         -0.026                                   -0.011
+2023        0.113              0.034                  -0.007                        0.101                          0.056                                    0.051
+2024        0.048             -0.032                  -0.037                       -0.006                         -0.061                                    0.006
+2025        0.036             -0.061                  -0.075                        0.004                         -0.028                                   -0.019
+2026       -0.055             -0.052                  -0.024                       -0.073                         -0.101                                   -0.039

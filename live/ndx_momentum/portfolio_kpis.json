@@ -1,0 +1,33 @@
+{
+  "status": "ok",
+  "observations": 14,
+  "window": [
+    "2026-10-01",
+    "2026-10-20"
+  ],
+  "primary": "pit_next_close_10bp",
+  "variants": {
+    "pit_next_close_10bp": {
+      "cumulative_return": 0.00812925216391891,
+      "ann_vol": 0.1127521590090095,
+      "sharpe_rf0": 1.3450609955625943,
+      "max_dd": -0.017652083754844172,
+      "days": 14
+    },
+    "static_repo_signal_close_0bp": {
+      "cumulative_return": 0.014625806982963452,
+      "ann_vol": 0.12964984307339733,
+      "sharpe_rf0": 2.0770980718602967,
+      "max_dd": -0.0313743490617181,
+      "days": 14
+    }
+  },
+  "qqq": {
+    "cumulative_return": -0.029928240400982964,
+    "ann_vol": 0.17494256508991787,
+    "sharpe_rf0": -3.041150271920253,
+    "max_dd": -0.06563460860402603,
+    "days": 14
+  },
+  "note": "Few observations: ratios are not statistically meaningful. Daily returns treat weights as rebalanced daily inside each week."
+}

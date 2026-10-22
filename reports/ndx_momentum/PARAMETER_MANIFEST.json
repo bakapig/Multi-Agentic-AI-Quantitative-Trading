@@ -1,0 +1,25 @@
+{
+  "rule": "20d momentum > 0 filter, rank by 5d momentum, top 5 equal weight (50%) + 50% PSQ, every 5 trading days",
+  "top_k": 5,
+  "lookback": 20,
+  "rank_window": 5,
+  "hold": 5,
+  "start_date": "2021-06-07",
+  "membership_anchor": "2026-10-15",
+  "variants": {
+    "pit_next_close_10bp": {
+      "universe": "pit",
+      "lag": 1,
+      "cost_bps": 10.0
+    },
+    "static_repo_signal_close_0bp": {
+      "universe": "static",
+      "lag": 0,
+      "cost_bps": 0.0
+    }
+  },
+  "primary": "pit_next_close_10bp",
+  "last_bar": "2026-10-20",
+  "source": "ndx-momentum-hedge-main (backtest_5y.py v2.0, backtest_pit.py)",
+  "config_sha256": "67fe7f3fc2d1996a200d2685e62afe0ef46b9b5eb18a4cee3544e96b54c7b7f8"
+}

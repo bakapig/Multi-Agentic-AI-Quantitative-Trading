@@ -1,0 +1,26 @@
+{
+  "last_close": "2026-10-20",
+  "run_utc": "2026-10-22T00:29:58+00:00",
+  "refreshed": false,
+  "history_drift": {
+    "returns": {},
+    "rows_changed": 0
+  },
+  "unavailable_tickers": [
+    "ALXN",
+    "ANSS",
+    "ATVI",
+    "CERN",
+    "EA",
+    "MXIM",
+    "SGEN",
+    "SPLK",
+    "WBA",
+    "WBD",
+    "XLNX"
+  ],
+  "orders_enabled": false,
+  "membership_anchor": "2026-10-15",
+  "execution": "paper; primary variant fills at the next close with 10 bp on stock turnover",
+  "config_sha256": "67fe7f3fc2d1996a200d2685e62afe0ef46b9b5eb18a4cee3544e96b54c7b7f8"
+}
