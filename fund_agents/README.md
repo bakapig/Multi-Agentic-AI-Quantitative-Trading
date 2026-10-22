@@ -1,4 +1,4 @@
-# Ensemble fund integration
+# AlphaHunt Capital — ensemble fund integration
 
 Updated 20 October 2026. `fund_agents` connects the teammate's three numerical
 engines through one Ensemble PM. The old standalone Pairs PM, its vendored
@@ -21,9 +21,10 @@ and starts the web app; use `-Mode research` for the cached historical replay.
 .\.venv\Scripts\python.exe -m fund_agents.dashboard
 ```
 
-The demo uses 240 invented XNYS sessions ending 16 October 2026. Open
-<http://127.0.0.1:8765> and choose Synthetic demos. All strategy targets, risk
-approvals and review tools refer to one saved cycle. No real order or fill occurs.
+The demo uses 240 invented XNYS sessions ending 16 October 2026. The demo saves operator-only research evidence. The investor dashboard at
+<http://127.0.0.1:8765> now presents ensemble backtests and sanitized, percentage-based
+risk evidence. Raw account amounts and synthetic account reports are not served.
+No real order or fill occurs.
 
 ## Run a historical research cycle
 
@@ -121,3 +122,17 @@ node --test tests/test_investor_portal.cjs
 
 See [the current architecture](../ARCHITECTURE.md) and
 [slide diagram](../presentations/architecture_20261020/ensemble_architecture.html).
+
+
+## AlphaHunt investor presentation
+
+The dashboard is ensemble-only and uses `/api/investor`. The former raw
+`/api/report` and `/api/reports` endpoints return 404. Public research is derived
+from the ensemble equity and regime files; saved account risk is converted to
+percentages through an explicit allowlist. No arbitrary account memo prose is
+published. The backtest runner is `scripts/run_ensemble_backtest.py`.
+
+The proposed 2.5% intraday / 7% persistent halt profile is separate from both the
+unchanged saved risk configuration and the historical strategy backtest.
+Automatic AI daily reviews are pending. Numeric claim checks do not verify every
+sentence of a model narrative.

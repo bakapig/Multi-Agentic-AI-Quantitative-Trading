@@ -1,4 +1,4 @@
-# Ensemble fund architecture
+# AlphaHunt Capital — ensemble fund architecture
 
 Updated 20 October 2026. One Ensemble PM replaces the retired standalone
 Kalman/OU Pairs PM. It runs the teammate's trend, momentum and mean-reversion
@@ -217,3 +217,22 @@ architecture allocations.
 
 The October 1–20 comparison lives in `reports/october_2026/`. It compares research
 backtests, without claiming confirmed fund holdings, fills or consolidated returns.
+
+
+## AlphaHunt investor presentation, 22 October 2026
+
+The investor dashboard now presents percentage-only ensemble backtesting with a
+normalized starting index of 100. Account balances, capital budgets, dollar
+targets, units and raw account-report endpoints are excluded. The Phantom Book
+publishes exposure fractions from a separately dated saved risk replay.
+
+The proposed investor envelope is a 2.5% intraday halt and 7% persistent
+maximum-drawdown halt pending human review. This is a proposal, not an implemented
+control or a policy used in the October backtest. Current saved controls retain
+12% soft drawdown and 25% hard drawdown. Intraday feeds, fill handling, exit
+reconciliation and reset policies require implementation and validation.
+
+The presentation labels human policy ownership, deterministic quantitative code
+and advisory interfaces separately. Structured numerical claims bind to recorded
+facts; narrative still requires human review. Automatic daily LLM reviews are
+not connected. Neither the dashboard nor the prototype guarantees capital survival.

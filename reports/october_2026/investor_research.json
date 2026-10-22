@@ -1,0 +1,417 @@
+{
+  "schema_version": "alphahunt-investor-v1",
+  "brand": {
+    "name": "AlphaHunt Capital",
+    "team": "alphahunter",
+    "mandate": "Absolute-return, systematic quantitative research",
+    "objective": "Seek equity participation with disciplined downside risk."
+  },
+  "backtest": {
+    "start": "2026-10-01",
+    "end": "2026-10-20",
+    "sessions": 14,
+    "universe_size": 878,
+    "universe_scope": "Global research universe; the connected fund adapter separately uses 14 US equities.",
+    "basis": "Standalone ensemble strategy backtest",
+    "dates": [
+      "2026-09-30",
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-19",
+      "2026-10-20"
+    ],
+    "series": {
+      "ensemble": {
+        "label": "Dynamic ensemble",
+        "metrics": {
+          "total_return": 0.044845190052661854,
+          "max_drawdown": -0.011649324987791587,
+          "annualized_volatility": 0.11200820424291638,
+          "sharpe": 6.762595915159665,
+          "positive_days": 10,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.00155649862793,
+          100.88746505219773,
+          100.83884216159832,
+          100.60558005704301,
+          101.27244509227357,
+          101.95969439714929,
+          103.57862095396975,
+          102.37199993668968,
+          102.95304897718687,
+          102.97533749947132,
+          102.44114613095562,
+          102.68843210570246,
+          103.79509436787644,
+          104.48451900526618
+        ]
+      },
+      "equal_weight": {
+        "label": "Equal-weight ensemble",
+        "metrics": {
+          "total_return": 0.026254407483006226,
+          "max_drawdown": -0.004205117145966941,
+          "annualized_volatility": 0.05025291278478009,
+          "sharpe": 8.534029542925902,
+          "positive_days": 10,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.0,
+          100.51220751902197,
+          100.60934319881831,
+          100.63871782502868,
+          100.75094971615704,
+          100.98640393439192,
+          101.88913757258663,
+          101.46068181319237,
+          101.76226327706345,
+          101.7389000858378,
+          101.64745687961687,
+          101.7584957198828,
+          102.18983924320786,
+          102.62544074830063
+        ]
+      },
+      "risk_parity": {
+        "label": "Inverse-volatility ensemble",
+        "metrics": {
+          "total_return": 0.026254407483006226,
+          "max_drawdown": -0.004205117145966941,
+          "annualized_volatility": 0.05025291278478009,
+          "sharpe": 8.534029542925902,
+          "positive_days": 10,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.0,
+          100.51220751902197,
+          100.60934319881831,
+          100.63871782502868,
+          100.75094971615704,
+          100.98640393439192,
+          101.88913757258663,
+          101.46068181319237,
+          101.76226327706345,
+          101.7389000858378,
+          101.64745687961687,
+          101.7584957198828,
+          102.18983924320786,
+          102.62544074830063
+        ]
+      },
+      "trend": {
+        "label": "Trend following",
+        "metrics": {
+          "total_return": 0.026550133995033143,
+          "max_drawdown": -0.0074760797419861635,
+          "annualized_volatility": 0.05610668539372614,
+          "sharpe": 7.741443138398457,
+          "positive_days": 9,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.0,
+          100.47501112946772,
+          100.87665344435791,
+          101.28769861643839,
+          100.69787893526214,
+          100.53046370469963,
+          101.30227821778577,
+          101.51256229192404,
+          101.78844136043828,
+          101.72602514974774,
+          102.20020517481085,
+          102.30513751801837,
+          102.15412706636295,
+          102.6550133995033
+        ]
+      },
+      "momentum": {
+        "label": "Momentum",
+        "metrics": {
+          "total_return": 0.05249739403212961,
+          "max_drawdown": -0.014910515033633609,
+          "annualized_volatility": 0.14006384181209397,
+          "sharpe": 6.372375837454608,
+          "positive_days": 9,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.0,
+          101.04604644131906,
+          100.93271569301774,
+          100.5874936532876,
+          101.49218581621213,
+          102.37222875736093,
+          104.30383868999803,
+          102.75590834510561,
+          103.4480369040801,
+          103.48194803245875,
+          102.74861473514511,
+          103.04346393634776,
+          104.44858213653399,
+          105.24973940321296
+        ]
+      },
+      "mean_reversion": {
+        "label": "Mean reversion",
+        "metrics": {
+          "total_return": -6.088895721068077e-05,
+          "max_drawdown": -0.0018286455843343763,
+          "annualized_volatility": 0.0053254286192656024,
+          "sharpe": -7.568710771561996,
+          "positive_days": 9,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.0,
+          100.01556498627913,
+          100.01790142644298,
+          100.04005435476077,
+          100.05753308279165,
+          100.05778182477816,
+          100.08495409672055,
+          100.0999096989696,
+          100.04624123612825,
+          100.0058854964304,
+          99.97876682637288,
+          99.91686244110632,
+          99.97247538266365,
+          99.99391110427894
+        ]
+      },
+      "benchmark": {
+        "label": "SPY benchmark",
+        "metrics": {
+          "total_return": 0.008418214427771353,
+          "max_drawdown": -0.02033144605816839,
+          "annualized_volatility": 0.09492151434899054,
+          "sharpe": 1.2211126945832071,
+          "positive_days": 8,
+          "observations": 14
+        },
+        "index": [
+          100.0,
+          100.17832832997064,
+          100.9191888229866,
+          101.59972885002155,
+          102.1583234159775,
+          101.91311195821022,
+          101.48171298278578,
+          102.09013575906384,
+          102.0285027607197,
+          102.0167059759438,
+          100.91393869353405,
+          101.20110316744466,
+          100.08129697405263,
+          100.50482875854443,
+          100.84182144277715
+        ]
+      }
+    },
+    "regimes": [
+      {
+        "date": "2026-10-01",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-02",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-05",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-06",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-07",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-08",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-09",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-12",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-13",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-14",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-15",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-16",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-19",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      },
+      {
+        "date": "2026-10-20",
+        "regime": "RANGING",
+        "weights": {
+          "trend": 0.1,
+          "momentum": 0.8,
+          "mean_reversion": 0.0,
+          "cash": 0.1
+        }
+      }
+    ],
+    "latest_allocation": {
+      "date": "2026-10-20",
+      "regime": "RANGING",
+      "weights": {
+        "trend": 0.1,
+        "momentum": 0.8,
+        "mean_reversion": 0.0,
+        "cash": 0.1
+      }
+    },
+    "method": [
+      "Research simulations; the account adapter records intentions and has no confirmed fills.",
+      "Market-specific commissions, board lots, short borrow and modeled 2 bp slippage.",
+      "Same-close execution and synthetic high/low bars are optimistic execution assumptions.",
+      "Regime allocations use the prior session. The current policy assigns mean reversion zero weight.",
+      "Local-currency asset returns have no FX conversion model. These are not reconciled fund returns.",
+      "The 14-session sample is too short to establish persistent risk-adjusted performance.",
+      "The proposed intraday and 7% halt profile was not applied to this historical backtest."
+    ]
+  },
+  "risk_replay": {
+    "available": false
+  },
+  "proposed_profile": {
+    "intraday_halt": 0.025,
+    "maximum_drawdown": 0.07,
+    "status": "PROPOSED",
+    "human_review_to_resume": true,
+    "intraday_monitor_connected": false
+  },
+  "governance": {
+    "automatic_model_calls": false,
+    "numerical_claim_checks": true,
+    "free_text_requires_human_review": true,
+    "risk_override_by_ai": false
+  },
+  "provenance": {
+    "source_commit": "ac973f06333a971758448b141024a8ce7411e052",
+    "curve_sha256": "84abc5545ed09672ed74bf858800477b8762550db517b0f9e44c26e0175f2ed0",
+    "regime_sha256": "7641613da74d430610ea4bc82ebd0f288ff3b4c868217ee7014295e5a4c7d7f0",
+    "manifest_sha256": "d5432d6256e079a8051f998584b9c551feafee66e2197660086cea072c3345c3",
+    "normalization": "100 at the start; percentage performance only",
+    "final_quote_recovery": "336 missing final daily bars were recovered from dated session-closing quote snapshots."
+  }
+}

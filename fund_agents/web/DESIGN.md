@@ -1,24 +1,20 @@
-# Meridian investor workspace
+# AlphaHunt Capital investor research
 
-The user requested the Stripe reference from
-[getdesign.md](https://getdesign.md/stripe/design-md), listed in
-[VoltAgent awesome-design-md](https://github.com/VoltAgent/awesome-design-md).
-This is an independently branded investor workspace inspired by that reference.
+Use navy ink, teal actions, muted gold accents, white surfaces and a cool neutral
+canvas. The wordmark is AlphaHunt Capital; the presenting team is alphahunter.
 
-Use white surfaces, a cool off-white canvas, navy ink, indigo actions, subtle
-borders, and restrained gradients. Use system sans-serif fonts and tabular money
-figures. Keep charts tied to saved quantities and label their basis.
+The primary experience is ensemble-only backtesting: percentage returns,
+drawdowns, normalized index values and the three ensemble engines. Do not display
+capital, account balances, units, asset prices or dollar exposure. The public API
+uses an explicit allowlist; raw account-report endpoints are unavailable.
 
-Every screen uses one selected cycle. Distinguish mandates, confirmed holdings,
-target gross, recorded intentions, and fills. Never build a return chart from
-unrelated account snapshots. Older reports and held cycles show unavailable
-measurements rather than fabricated zeros.
+Keep the backtest and the saved account risk replay distinct. The Phantom Book
+uses percentages, with its own valuation date. No reduction means no reduction;
+never turn exposure arithmetic into avoided-loss or profit claims.
 
-The current product is a localhost report reader. Navigation, search, tours,
-filters, and exports work without external services. Hosting and investor
-authentication require a separate deployment.
+The 2.5% intraday and 7% hard profile is proposed, not implemented or backtested.
+Keep that status visible alongside the current saved policy. AI interfaces are
+advisory, automatic model calls are not connected, and free text requires review.
 
-The active mandate has one Ensemble PM with trend, momentum and mean-reversion
-engines, plus central cash. Only ensemble-fund-v3 reports appear in the active
-portal. Show actual allocation weights, including zero-weight standby engines.
-Source hashes and the effective allocation policy belong beside the diagnostics.
+Navigation, research policy selection, chart hover, search, the guided tour,
+normalized CSV downloads and the investor brief must work without external calls.

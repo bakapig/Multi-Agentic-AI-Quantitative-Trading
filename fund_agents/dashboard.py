@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
+from .investor import build_investor_data
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,8 +58,9 @@ def reports_in(directory):
 
 
 class DashboardHandler(BaseHTTPRequestHandler):
-    def __init__(self, *args, report_directory, **kwargs):
+    def __init__(self, *args, report_directory, backtest_directory=None, **kwargs):
         self.report_directory = report_directory
+        self.backtest_directory = backtest_directory or ROOT / 'reports/october_2026'
         super().__init__(*args, **kwargs)
 
     def respond(self, status, body, content_type):
@@ -76,16 +78,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         url = urlsplit(self.path)
-        if url.path in ("/api/reports", "/api/report"):
-            reports, warnings = reports_in(self.report_directory)
-            if url.path == "/api/reports":
-                keys = ("cycle_id", "as_of", "mode", "status", "generated_at_utc")
-                self.json_response(200, {"reports": [dict(id=key, **{k: report[k] for k in keys})
-                                                    for key, report in reports], "warnings": warnings})
-            else:
-                selected = parse_qs(url.query).get("id", [None])[0]
-                report = next((r for key, r in reports if key == selected), None)
-                self.json_response(200 if report else 404, report or {"error": "Report not found"})
+        if url.path == '/api/investor':
+            reports, _ = reports_in(self.report_directory)
+            replay = next((r for _, r in reports if r['mode'] == 'research'
+                           and r['status'] == 'INTENTS_RECORDED'), None)
+            try:
+                self.json_response(200, build_investor_data(self.backtest_directory, replay))
+            except (ValueError, KeyError, OSError, TypeError):
+                self.json_response(503, {'error': 'Ensemble research evidence is unavailable. Refresh after the source is repaired.'})
             return
         assets = {"/": ("index.html", "text/html"), "/app.js": ("app.js", "text/javascript"),
                   "/styles.css": ("styles.css", "text/css")}
@@ -100,9 +100,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--reports", type=Path, default=ROOT / "runs/fund_agents")
+    parser.add_argument("--backtest", type=Path, default=ROOT / "reports/october_2026")
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(DashboardHandler, report_directory=args.reports.resolve()))
-    print(f"Fund dashboard: http://127.0.0.1:{server.server_port} (read-only)", flush=True)
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), partial(DashboardHandler, report_directory=args.reports.resolve(), backtest_directory=args.backtest.resolve()))
+    print(f"AlphaHunt Capital: http://127.0.0.1:{server.server_port} (ensemble research)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

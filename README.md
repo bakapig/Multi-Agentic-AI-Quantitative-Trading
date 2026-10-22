@@ -1,83 +1,61 @@
-# Meridian Ensemble Research System
+# AlphaHunt Capital
 
-One Ensemble PM combines the teammate's **trend following, momentum and mean
-reversion** engines. Independent fund risk approves portfolio targets, and an
-advisory evidence lane reviews the results. The standalone Kalman/OU Pairs PM
-has been removed from the active code.
+Presented by **alphahunter**. An absolute-return, systematic quantitative research
+fund built around one ensemble, independent risk and a two-lane architecture.
+The objective is equity participation with a more defensive risk experience.
 
-The illustrative USD 5 million mandate is USD 3 million for the ensemble and
-USD 2 million central cash. The prototype records intentions with **zero fills**.
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-fund.txt
-.\.venv\Scripts\python.exe -m fund_agents
-.\.venv\Scripts\python.exe -m fund_agents.dashboard
-```
-
-Open <http://127.0.0.1:8765> to inspect the three engines, actual allocation weights,
-fund risk, Phantom Book, committee evidence, system flow and decision ledger.
-Current reports use `ensemble-fund-v3`; earlier report schemas are historical.
-
-- [Current architecture](ARCHITECTURE.md)
-- [Updated slide diagram](presentations/architecture_20261020/ensemble_architecture.html)
-- [Architecture PDF](output/pdf/Ensemble_Fund_Architecture_20261020.pdf)
-- [Fund run guide and account schema](fund_agents/README.md)
-- [Standalone ensemble research](multi_strategy_ensemble/README.md)
-- [Presentation index](presentations/README.md)
-- [NDX momentum-hedge strategy (top-5 momentum stocks + PSQ hedge, point-in-time universe)](ndx_momentum/README.md):
-  separate paper strategy with its own daily update (`scripts/run_ndx_momentum_daily.py`) and outputs in `live/ndx_momentum/` and
-  `reports/ndx_momentum/`. It is not connected to `fund_agents`.
-
-The default regime policy currently gives mean reversion 0% in every state.
-Equal-weight and inverse-volatility policies include all three engines. The
-connected adapter currently uses an explicit USD US-equity universe with XNYS
-sessions. Automatic LLM calls, fills and consolidated fund returns remain pending.
-
-## October 1–20, 2026 backtests
-
-Compare the original Backtrader ensemble with the newly added standalone momentum
-strategy in [the October report](reports/october_2026/research_report.md) or
-[the browser results page](reports/october_2026/index.html).
-All variants, daily returns, weights, data exclusions and source hashes are saved.
-
-The full original universe contains 878 assets, and the new momentum universe
-contains 20 assets. Both cover all 14 test sessions. Missing final daily bars were
-recovered from dated closing quote snapshots and a checked end-of-day source;
-the report records the exact marks, timestamps, scale factors and limitations.
-No asset was dropped and no missing October 20 close was carried forward.
+## Investor dashboard
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe scripts/refresh_ensemble_prices.py --end 2026-10-20
-.\.venv\Scripts\python.exe scripts/compare_october_strategies.py
+.\.venv\Scripts\python.exe -m fund_agents.dashboard
 ```
 
-These are research simulations with different universes, execution rules and
-starting-position conventions. They are separate from the fund's intention-only
-adapter and do not establish consolidated fund returns. Read the report's method
-notes before comparing the results. Parameters were not optimized on October.
+Open <http://127.0.0.1:8765/>. The investor view shows percentage performance,
+normalized backtest curves, ensemble allocations, a percentage-based Phantom Book,
+and governance status. It does not disclose account capital, balances, units or
+dollar exposures. Raw account-report endpoints are not served.
 
-## Standalone momentum strategy
-
-The [momentum module](momentum/README.md) combines a 50% time-series trend sleeve
-and a 50% long-only inverse-volatility core, using walk-forward GARCH-t volatility
-forecasts. Its current 20 assets include US-listed funds and four SGX securities.
-The portfolio targets 10% annual volatility with a 3x gross exposure cap, applies
-its original lag of two bars, and models trading costs and financing.
+## Ensemble backtesting — October 1–20, 2026
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/run_momentum_daily.py --no-refresh --as-of-utc 2026-10-21
-.\.venv\Scripts\python.exe scripts/run_momentum_backtest.py
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe scripts/run_ensemble_backtest.py --start 2026-10-01 --end 2026-10-20
 ```
 
-The daily updater writes to `live/momentum/`; the full historical evaluation
-writes to `reports/momentum/`. No scheduler is installed by these commands.
+Outputs are in [reports/october_2026](reports/october_2026/research_report.md).
+The compatibility command `scripts/compare_october_strategies.py` now invokes this
+same ensemble-only runner. The active workflow includes trend following, momentum,
+mean reversion, ensemble allocation variants and SPY. Separate historical research
+packages do not feed the investor dashboard or this backtest runner.
 
-## Project scope
+The original research universe contains 878 global assets. The connected account
+adapter separately supports a declared 14-name US-equity universe. Standalone
+research returns are not consolidated fund NAV or confirmed trading results.
+The default regime policy allocates 0% to mean reversion; equal-weight and
+inverse-volatility alternatives include it. The crisis policy holds 70% of the
+trading sleeve in cash.
 
-The active project contains the equity ensemble, standalone multi-asset momentum,
-shared utilities and the fund dashboard. Removed legacy experiments, data and
-presentation exports have been moved outside this working tree to a recoverable
-local archive. Git history is preserved. Existing local fund-integration changes
-are retained.
+## Risk and advisory status
+
+The proposed AlphaHunt investor profile is a 2.5% intraday halt and a 7% persistent
+maximum-drawdown halt pending human review. It is **not implemented or applied to
+the October backtest**. The saved account policy retains its 12% soft threshold
+and 25% hard breaker. Intraday monitoring and execution handling remain pending.
+No halt guarantees a realized loss ceiling or capital survival.
+
+Human owners set the mandate and risk policy. Deterministic quantitative code
+computes targets; independent risk governs approval. Analyst and committee
+interfaces are advisory. Structured numerical claims are checked against saved
+facts, while narrative requires human review. Automatic daily LLM calls are not
+connected. The account adapter records intentions with zero confirmed fills.
+
+- [Architecture](ARCHITECTURE.md)
+- [Fund operator guide](fund_agents/README.md)
+- [Ensemble research](multi_strategy_ensemble/README.md)
+
+## Validation
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+node --test tests/test_investor_portal.cjs
+```
