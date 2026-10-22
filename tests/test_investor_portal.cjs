@@ -62,7 +62,7 @@ test('proposed 2.5 and 7 risk profile is kept with strategy suggestions while ol
  assert.doesNotMatch(h,/Soft drawdown threshold/i);
 });
 
-test('architecture view blends two-lane pipeline with human command and AI governance',()=>{
+test('architecture view shows two-lane pipeline with human command and quantitative authority',()=>{
  const {api}=portal();api.setData(fixture());
  const h=api.flowView();
  assert.match(h,/The two-lane AlphaHunt architecture/);
@@ -71,10 +71,8 @@ test('architecture view blends two-lane pipeline with human command and AI gover
  assert.match(h,/Human command\. Quantitative authority\./);
  assert.match(h,/Mandate & risk policy/);
  assert.match(h,/Deterministic decision code/);
- assert.match(h,/Numerical claim verification/);
- assert.match(h,/Current AI status &amp; governance/);
- assert.match(h,/NOT CONNECTED/);
- assert.match(h,/Trading authority/);
+ assert.doesNotMatch(h,/Numerical claim verification/i);
+ assert.doesNotMatch(h,/Current AI status/i);
  assert.doesNotMatch(h,/Research recap/i);
  assert.doesNotMatch(h,/DETERMINISTIC EVIDENCE SUMMARY/i);
 });

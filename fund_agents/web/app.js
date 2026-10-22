@@ -403,7 +403,6 @@ function riskView(){
 }
 
 function flowView(){
-  const g = data.governance, r = data.risk_replay;
   return panel('The two-lane AlphaHunt architecture', `
     <div class="human-command"><span>HUMAN COMMAND</span><strong>Universe · mandate · allocation policy · risk limits</strong></div>
     <div class="lane-label">LANE 1 / DETERMINISTIC QUANTITATIVE CODE</div>
@@ -424,24 +423,7 @@ function flowView(){
       <div><span>LANE 2 · ADVISORY</span><h3>Evidence & interpretation</h3><p>Analyst and committee interfaces review the saved facts after risk.</p></div>
     </div>
   `)
-  + `<div class="grid-equal">
-      ${panel('Numerical claim verification', `
-        <div class="review-summary">
-          <div class="review-icon">${icon('check')}</div>
-          <div><h3>Structured claims match saved facts</h3><p>Imported responses bind to the exact evidence digest. Structured metric values must match the recorded values; mismatches reject the reply.</p></div>
-        </div>
-        <p class="panel-foot">Free-text narratives still require human review. These checks do not establish that every sentence is correct.</p>
-      `, badge('IMPLEMENTED','good'))}
-      ${panel('Current AI status & governance', `
-        <div class="status-list">
-          <div><span>Automatic daily model calls</span>${badge(g.automatic_model_calls?'CONNECTED':'NOT CONNECTED','warn')}</div>
-          <div><span>Numerical claim checks</span>${badge('AVAILABLE','good')}</div>
-          <div><span>Latest saved committee reply</span>${badge(r.chair_status==='STRUCTURED_CLAIMS_VALIDATED'?'STRUCTURED CLAIMS VALIDATED':'NO VALIDATED NOTE')}</div>
-          <div><span>Trading authority</span>${badge('NONE')}</div>
-        </div>
-      `)}
-    </div>`
-  + note('Automatic model calls are not connected. Advisory review cannot change portfolio weights, override risk, or execute trades.');
+  + note('Human command and deterministic code retain exclusive authority over portfolio allocation and risk approval.');
 }
 
 function auditView(){
