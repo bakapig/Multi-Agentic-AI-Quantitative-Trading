@@ -1,0 +1,9 @@
+changes parsed: 228 (2007-02-01 to 2026-10-09)
+initial members reconstructed (2007-01): 103
+consistency anomalies: 4
+  2016-06-20: reconstructed size 107 before this date
+  2012-07-23: KFT added but not a member afterwards
+  2009-10-29: PCLN added but not a member afterwards
+  2009-01-20: NWSA added but not a member afterwards
+tickers that were members since 2020-06: 166; with price data: 152; missing: 14
+missing price history: ['ALXN', 'ANSS', 'ATVI', 'CERN', 'CTXS', 'EA', 'FI', 'KFT', 'MXIM', 'SGEN', 'SPLK', 'WBA', 'WBD', 'XLNX']

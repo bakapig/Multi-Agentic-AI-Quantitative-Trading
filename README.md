@@ -24,6 +24,9 @@ Current reports use `ensemble-fund-v3`; earlier report schemas are historical.
 - [Fund run guide and account schema](fund_agents/README.md)
 - [Standalone ensemble research](multi_strategy_ensemble/README.md)
 - [Presentation index](presentations/README.md)
+- [NDX momentum-hedge strategy (top-5 momentum stocks + PSQ hedge, point-in-time universe)](ndx_momentum/README.md):
+  separate paper strategy with its own daily update (`scripts/run_ndx_momentum_daily.py`) and outputs in `live/ndx_momentum/` and
+  `reports/ndx_momentum/`. It is not connected to `fund_agents`.
 
 The default regime policy currently gives mean reversion 0% in every state.
 Equal-weight and inverse-volatility policies include all three engines. The

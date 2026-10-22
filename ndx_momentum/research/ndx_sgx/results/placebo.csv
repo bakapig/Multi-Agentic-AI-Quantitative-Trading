@@ -1,0 +1,4 @@
+universe,rebalances,strategy_gross,all_positive20d_names,random5_mean,random5_p95,p_value_rank_skill
+NDX current,490,0.036,0.015,0.015,0.038,0.072
+NDX point-in-time,490,-0.005,-0.007,-0.007,0.013,0.425
+SGX only (STI current),490,-0.003,0.0,0.0,0.011,0.684
