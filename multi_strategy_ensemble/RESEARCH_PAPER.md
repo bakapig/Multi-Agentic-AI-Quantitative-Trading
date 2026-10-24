@@ -9,20 +9,6 @@
 
 ---
 
-### Student Contribution Matrix
-
-In strict accordance with the FE5209 Group Project guidelines, the econometric research, quantitative system architecture, and empirical backtesting were distributed across the following roles:
-
-| Team Member | Matriculation / Role | Primary Functional Responsibilities & Contributions |
-| :--- | :--- | :--- |
-| **Student 1 (Lead Author)** | Project Lead & Quantitative Architect | Conceptualization of multi-paradigm ensemble framework; theoretical mapping of strategies from *AI Quantitative Trading: From Zero to One* (`ai-quant-book/manuscript/en`); econometric formulation of Hypotheses 1–3. |
-| **Student 2** | Regime Modeling & Detection Lead | Mathematical formulation and calibration of Lesson 12 Multi-Factor Market Regime Detection Router (ADX, realized volatility, trend direction); transition probability state-machine. |
-| **Student 3** | Strategy Engines Implementation Lead | Code implementation of Lesson 05.1 Trend Following (Dual-MA + ADX filter + ATR sizing), Lessons 05/16 Cross-Sectional Momentum, and Lesson 05.2 Cointegrated Mean Reversion. |
-| **Student 4** | Global Universe & Execution Lead | Data ingestion and sanitation for 308 tickers spanning S&P 500 (11 GICS sectors), Singapore STI 30, and STOXX 600; microstructure execution modeling (exchange commissions, borrow drag, discrete board lots). |
-| **Student 5** | Econometric Attribution & Risk Analytics Lead | Out-of-sample forward backtesting (Official Test Period: Oct 1 – Oct 20, 2026); CAPM and multi-factor regression attribution; Sharpe/Calmar/drawdown risk metric compilation; visual tearsheet generation. |
-
----
-
 ## Abstract
 
 This paper investigates whether systematic algorithmic strategies can decisively "beat the market" (FE5209 Challenge 1) across varying macroeconomic regimes when evaluated over an expanded 308-ticker global universe spanning the **US S&P 500 (11 GICS sectors), Singapore Straits Times Index (STI 30), and European STOXX 600**. Grounded in the quantitative trading paradigms articulated in *AI Quantitative Trading: From Zero to One* (Zhang, 2024), we address the fatal weakness of monolithic quantitative strategies: **regime vulnerability**—where trend followers bleed capital in sideways chop, while mean-reversion strategies suffer catastrophic blowups during structural breakouts.
