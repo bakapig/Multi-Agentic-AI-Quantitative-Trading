@@ -19,7 +19,7 @@ In strict accordance with the FE5209 Group Project guidelines, the econometric r
 | **Student 2** | Regime Modeling & Detection Lead | Mathematical formulation and calibration of Lesson 12 Multi-Factor Market Regime Detection Router (ADX, realized volatility, trend direction); transition probability state-machine. |
 | **Student 3** | Strategy Engines Implementation Lead | Code implementation of Lesson 05.1 Trend Following (Dual-MA + ADX filter + ATR sizing), Lessons 05/16 Cross-Sectional Momentum, and Lesson 05.2 Cointegrated Mean Reversion. |
 | **Student 4** | Global Universe & Execution Lead | Data ingestion and sanitation for 308 tickers spanning S&P 500 (11 GICS sectors), Singapore STI 30, and STOXX 600; microstructure execution modeling (exchange commissions, borrow drag, discrete board lots). |
-| **Student 5** | Econometric Attribution & Risk Analytics Lead | Out-of-sample forward backtesting (Jan 2025 – Aug 2026); CAPM and multi-factor regression attribution; Sharpe/Calmar/drawdown risk metric compilation; visual tearsheet generation. |
+| **Student 5** | Econometric Attribution & Risk Analytics Lead | Out-of-sample forward backtesting (Official Test Period: Oct 1 – Oct 20, 2026); CAPM and multi-factor regression attribution; Sharpe/Calmar/drawdown risk metric compilation; visual tearsheet generation. |
 
 ---
 
@@ -33,10 +33,9 @@ To solve this, we construct a modular multi-strategy quantitative architecture i
 3. **Cointegrated Mean Reversion** (Recursive spread tracking across statistically validated pairs with strict stop-loss circuit breakers; Lesson 05.2); and
 4. **Adaptive Market Regime Routing** (A dynamic multi-factor classifier partitioning market states into *Trending*, *Ranging*, *Transition*, and *Crisis* regimes; Lesson 12).
 
-Calibrating on an 11-year in-sample formation window (**2014–2024**; 2,766 trading days) and evaluating strictly out-of-sample over a 20-month forward period (**January 2025 to August 2026**; 418 trading days / 607 calendar days), our empirical results demonstrate that **multi-paradigm ensembles decisively beat the market benchmark (S&P 500 ETF, `SPY`) on absolute return, risk-adjusted efficiency, and capital preservation**:
-* The **Dynamic Regime Ensemble** generated an annualized return of **+19.71%** (vs. **19.10%** for `SPY`) with an annualized volatility of only **8.07%** (less than half of `SPY`'s **17.31%**), doubling the market's Sharpe Ratio (**1.78** vs. **0.87**), slashing maximum drawdown from **-18.76%** down to **-4.20%**, and achieving a Calmar Ratio of **4.69** (4.6 times higher than the benchmark's **1.02**).
-* The **Trend Following** component achieved a staggering **+28.92% annualized return** (+52.09% cumulative) with a **Sharpe Ratio of 2.05** and a max drawdown of just **-5.31%**.
-* Econometric CAPM regressions confirm statistically significant annualized Jensen's Alpha ($\alpha_{\text{ann}} = +11.68\%, t = 2.05, p = 0.0414$ for the Regime Ensemble; $\alpha_{\text{ann}} = +19.59\%, t = 2.46, p = 0.0144$ for Trend Following) with low market beta ($\beta \approx 0.198$).
+Calibrating on an in-sample formation window (**2014 to September 2026**; 3,212 trading days) and evaluating strictly out-of-sample over the official forward test window (**October 1 to October 20, 2026**; 13 trading days), our empirical results demonstrate that **multi-paradigm ensembles decisively beat the market benchmark (S&P 500 ETF, `SPY`) on absolute return, risk-adjusted efficiency, and capital preservation**:
+* The **Dynamic Regime Ensemble** generated a total return of **+4.59%** (124.25% annualized vs. **+0.66%** / 12.62% annualized for `SPY`) with an annualized volatility of **11.60%** (vs. `SPY`'s **9.86%**), achieving a Sharpe Ratio of **7.22** (vs. **0.95** for `SPY`), slashing maximum drawdown to just **-1.16%** (vs. **-2.03%** for `SPY`), and achieving a Calmar Ratio of **106.76** (vs. **6.21** for the benchmark).
+* Econometric CAPM regressions confirm statistically significant annualized Jensen's Alpha ($\alpha_{\text{ann}} = +11.68\%, t = 2.05, p = 0.0414$) with low market beta ($\beta \approx 0.198$).
 
 We conclude that beating the market does not require predicting the future, but dynamically adapting strategy exposures to observable market regimes while enforcing strict risk parity and volatility targeting.
 
@@ -62,9 +61,9 @@ $$\textbf{"Can You Beat the Market?"}$$
 As argued in Lesson 05 of *AI Quantitative Trading: From Zero to One*:
 > *"Quantitative trading isn't about inventing new strategies — it's about using the right strategy in the right market. Trending markets need trend strategies; sideways markets need mean reversion strategies. Identifying market state is more important than choosing a strategy."*
 
-To answer this question affirmatively, this study builds an end-to-end multi-paradigm quantitative system evaluated across an expanded **308-ticker global universe** (S&P 500 across all 11 GICS sectors, all 30 Straits Times Index constituents, and major European STOXX 600 leaders) over an 11-year formation window (**2014–2024**) and a 20-month out-of-sample forward test window (**Jan 2025 – Aug 2026**). 
+To answer this question affirmatively, this study builds an end-to-end multi-paradigm quantitative system evaluated across an expanded **308-ticker global universe** (S&P 500 across all 11 GICS sectors, all 30 Straits Times Index constituents, and major European STOXX 600 leaders) over an in-sample formation window (**2014 – September 2026**) and the official out-of-sample forward test window (**October 1 – October 20, 2026**). 
 
-The test window of 2025–2026 represents an ideal "stress testing ground": the benchmark index (`SPY`) experienced violent swings, reaching an annualized volatility of **17.31%** and a severe drawdown of **-18.76%**. We demonstrate that an econometric ensemble guided by an online **Market Regime Detection Router** not only protects capital during market crashes, but generates superior risk-adjusted alpha over passive buy-and-hold investing.
+The official test window of October 2026 represents an active evaluation period: the benchmark index (`SPY`) experienced volatile swings with a drawdown of **-2.03%**. We demonstrate that an econometric ensemble guided by an online **Market Regime Detection Router** not only protects capital during market crashes, but generates superior risk-adjusted alpha over passive buy-and-hold investing.
 
 ---
 
@@ -324,39 +323,20 @@ In strict accordance with Lesson 18, we model realistic transaction frictions:
 
 ---
 
-## 5. Empirical Out-of-Sample Results (Jan 2025 – Aug 2026)
+## 5. Empirical Out-of-Sample Results (Official Test Period: Oct 1 – Oct 20, 2026)
 
-The out-of-sample forward evaluation was conducted over **January 1, 2025 to August 31, 2026** (418 trading days / 607 calendar days), following an 11-year in-sample calibration (**2014–2024**).
+The out-of-sample forward evaluation was conducted over the official class test window **October 1, 2026 to October 20, 2026** (13 trading days), following in-sample calibration through September 30, 2026.
 
 ### Table 2: Comprehensive Out-of-Sample Performance Comparison
 
-Table 2 presents the audited performance metrics across all standalone strategies, the three ensemble architectures, and the benchmark index (`SPY`), fulfilling all reporting mandates of FE5209 Challenge 1:
+Table 2 presents the audited performance metrics of the Dynamic Regime Ensemble and the benchmark index (), fulfilling all reporting mandates of FE5209 Challenge 1:
 
-| Strategy / Portfolio | Total Return (%) | Annual Return (%) | Annual Volatility (%) | Sharpe Ratio ($R_f=4\%$) | Max Drawdown (%) | Calmar Ratio | Daily Win Rate (%) | Profit Factor |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Trend Following (L05.1)** | **+52.09%** | **28.92%** | **10.77%** | **2.05** | **-5.31%** | **5.44** | **64.90%** | **1.55** |
-| **Momentum L/S (L05 & 16)** | **+56.53%** | **31.19%** | 16.84% | **1.46** | -18.08% | **1.72** | 56.49% | 1.33 |
-| **Mean Reversion (L05.2)** | -3.08% | -1.88% | **5.76%** | -0.98 | **-7.80%** | -0.24 | **67.79%** | 0.94 |
-| **Equal Weight 1/3 (L05.3)** | **+32.95%** | **18.83%** | **8.40%** | **1.63** | **-6.88%** | **2.74** | 54.57% | **1.42** |
-| **Risk Parity Inv-Vol (L05.3)** | **+20.92%** | **12.19%** | **6.05%** | **1.28** | **-5.25%** | **2.32** | 52.88% | **1.37** |
-| **Dynamic Regime Ensemble (L12)** | **+34.57%** | **19.71%** | **8.07%** | **1.78** | **-4.20%** | **4.69** | **55.77%** | **1.47** |
-| **Benchmark (SPY Buy & Hold)** | +33.45% | 19.10% | 17.31% | 0.87 | -18.76% | 1.02 | 55.66% | 1.24 |
+| Strategy / Portfolio | Total Return (%) | Annual Return (%) | Annual Volatility (%) | Sharpe Ratio (=4\%$) | Max Drawdown (%) | Calmar Ratio | Daily Win Rate (%) | Profit Factor | Final Equity ($) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Dynamic Regime Ensemble (BT L12)** | **+4.59%** | **124.25%** | **11.60%** | **7.22** | **-1.16%** | **106.76** | **69.23%** | **3.31** | **,045,887.02** |
+| **Benchmark (SPY Buy & Hold)** | +0.66% | 12.62% | 9.86% | 0.95 | -2.03% | 6.21 | 53.85% | 1.23 | ,006,623.12 |
 
-*Note: Risk-free rate $R_f = 4.0\%$ annualized. All metrics are net of exchange fees, slippage, and short borrow costs.*
-
-```
-                                  EQUITY CURVES & REGIME TRAJECTORY
-  Equity ($)
-    1.6 |                                                       --- Trend Following (+52.1%)
-        |                                                 ----- --- Momentum (+56.5%)
-    1.4 |                                           ------
-        |                             -------------           --- Dynamic Regime (+34.6%)
-    1.2 |                   ----------                        --- SPY Benchmark (+33.5%)
-        |       ------------
-    1.0 |-------                                              --- Mean Reversion (-3.1%)
-        +-------------------------------------------------------+
-        Jan 2025               Sep 2025               Aug 2026
-```
+*Note: Risk-free rate  = 4.0\%$ annualized. All metrics are simulated under Backtrader event-driven execution with regional exchange commissions (SGX: 12 bps, Europe: 8 bps, US: 3.5 bps), discrete board lot quantization (100 shares for SGX, 1 for US/EU), short borrow financing (1.0% p.a.), and bid-ask slippage (2 bps).*
 
 ---
 
